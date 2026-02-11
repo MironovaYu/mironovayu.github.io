@@ -11,8 +11,9 @@ services:
       - ./static/uploads:/app/static/uploads
       # Git-репозиторий для кнопки «Опубликовать»
       - ./.git:/app/.git
-      # SSH-ключ для git push (монтируем во временную папку, entrypoint скопирует с нужными правами)
-      - ~/.ssh/id_ed25519:/tmp/ssh-key/id_ed25519:ro
+      # SSH-ключ для git push
+      # На UmbrelOS замените путь: /home/umbrel/.ssh/id_ed25519
+      - ${SSH_KEY_PATH:-~/.ssh/id_ed25519}:/tmp/ssh-key/id_ed25519:ro
     environment:
       - SECRET_KEY=${SECRET_KEY:-supersecretkey_change_me}
       - ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin}
