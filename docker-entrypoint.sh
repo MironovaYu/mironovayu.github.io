@@ -31,11 +31,21 @@ if [ -n "$GIT_REMOTE_URL" ]; then
             git -C /app remote set-url origin "$GIT_REMOTE_URL" 2>/dev/null || true
         fi
     else
-        # .git отсутствует или повреждён — создаём новый
+        # .git отсутствует или повреждён — создаём и синхронизируем с GitHub
         echo "[init] Инициализация git-репозитория..."
         git init -b main /app 2>/dev/null || true
         git -C /app remote add origin "$GIT_REMOTE_URL" 2>/dev/null || \
             git -C /app remote set-url origin "$GIT_REMOTE_URL" 2>/dev/null || true
+
+        # Скачиваем историю из GitHub, чтобы push работал корректно
+        echo "[init] Синхронизация с GitHub..."
+        if git -C /app fetch origin main 2>/dev/null; then
+            git -C /app reset origin/main 2>/dev/null || true
+            echo "[init] Git синхронизирован с origin/main"
+        else
+            echo "[init] ⚠️ Не удалось fetch — первый push создаст ветку"
+        fi
+
         echo "[init] Git remote origin → $GIT_REMOTE_URL"
     fi
 fi
