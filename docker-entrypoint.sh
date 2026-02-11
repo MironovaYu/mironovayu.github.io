@@ -13,6 +13,15 @@ if [ ! -d /app/static/uploads/pages ]; then
 fi
 # ──────────────────────────────────────────────────────────────
 
+# ── SSH key: copy from mount with correct permissions ─────
+# Docker mount preserves host permissions (often 0755),
+# but SSH requires 0600 on private keys.
+if [ -f /tmp/ssh-key/id_ed25519 ]; then
+    cp /tmp/ssh-key/id_ed25519 /root/.ssh/id_ed25519
+    chmod 600 /root/.ssh/id_ed25519
+    echo "[init] SSH-ключ установлен"
+fi
+
 # Configure git identity if not already set
 if [ -n "$GIT_USER_NAME" ]; then
     git config --global user.name "$GIT_USER_NAME"
