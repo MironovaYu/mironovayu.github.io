@@ -10,10 +10,11 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt gunicorn
 
 COPY . .
+RUN chmod +x /app/docker-entrypoint.sh
 
 # Git safe directory (mounted volume)
 RUN git config --global --add safe.directory /app
 
 EXPOSE 4343
 
-ENTRYPOINT ["/app/docker-entrypoint.sh"]
+ENTRYPOINT ["sh", "/app/docker-entrypoint.sh"]

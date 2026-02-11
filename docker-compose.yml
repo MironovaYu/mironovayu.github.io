@@ -6,8 +6,9 @@ services:
     ports:
       - "4343:4343"
     volumes:
-      # Монтируем весь проект — данные, статика и .git
-      - .:/app
+      # Данные CMS и загрузки (сохраняются между перезапусками)
+      - ./data:/app/data
+      - ./static/uploads:/app/static/uploads
       # SSH-ключи для git push (read-only)
       - ~/.ssh:/root/.ssh:ro
     environment:
