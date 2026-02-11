@@ -1,7 +1,7 @@
 FROM python:3.12-slim
 
-# Git for auto-push
-RUN apt-get update && apt-get install -y --no-install-recommends git && \
+# Git + SSH for auto-push to GitHub
+RUN apt-get update && apt-get install -y --no-install-recommends git openssh-client && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
