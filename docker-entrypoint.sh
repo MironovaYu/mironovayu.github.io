@@ -33,12 +33,15 @@ if [ -n "$GIT_REMOTE_URL" ]; then
     else
         # .git отсутствует или повреждён — создаём новый
         echo "[init] Инициализация git-репозитория..."
-        git init /app 2>/dev/null || true
+        git init -b main /app 2>/dev/null || true
         git -C /app remote add origin "$GIT_REMOTE_URL" 2>/dev/null || \
             git -C /app remote set-url origin "$GIT_REMOTE_URL" 2>/dev/null || true
         echo "[init] Git remote origin → $GIT_REMOTE_URL"
     fi
 fi
+
+# Auto-setup upstream for push
+git config --global push.autoSetupRemote true 2>/dev/null || true
 
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo "  Сайт:    http://0.0.0.0:4343"
