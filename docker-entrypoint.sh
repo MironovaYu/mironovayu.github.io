@@ -53,6 +53,11 @@ fi
 # Auto-setup upstream for push
 git config --global push.autoSetupRemote true 2>/dev/null || true
 
+# Ensure branch is named 'main' (not 'master')
+if git -C /app rev-parse --verify master >/dev/null 2>&1; then
+    git -C /app branch -m master main 2>/dev/null || true
+fi
+
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo "  Сайт:    http://0.0.0.0:4343"
 echo "  Админка: http://0.0.0.0:4343/admin/"

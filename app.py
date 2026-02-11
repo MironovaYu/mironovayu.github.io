@@ -681,7 +681,7 @@ def run_deploy():
 
         log.append("🚀 Отправка на GitHub...")
         result = subprocess.run(
-            ["git", "push", "-u", "origin", "main"],
+            ["git", "push", "-u", "origin", "HEAD:main"],
             capture_output=True, text=True, cwd=project_dir, timeout=60
         )
         if result.returncode != 0:
