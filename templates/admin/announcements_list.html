@@ -1,0 +1,59 @@
+{% extends "admin/base.html" %}
+{% block title %}Анонсы — Админ-панель{% endblock %}
+
+{% block admin_content %}
+<div class="admin-page">
+    <div class="admin-page__header">
+        <div class="admin-page__header-row">
+            <div>
+                <h1>Анонсы</h1>
+                <p>{{ announcements|length }} анонсов</p>
+            </div>
+            <a href="{{ url_for('admin_announcement_new') }}" class="admin-btn admin-btn--primary">+ Новый анонс</a>
+        </div>
+    </div>
+
+    {% if announcements %}
+    <div class="admin-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Название</th>
+                    <th>Дата</th>
+                    <th>Место</th>
+                    <th>Статус</th>
+                    <th>Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ann in announcements %}
+                <tr>
+                    <td><strong>{{ ann.title }}</strong></td>
+                    <td>{{ ann.date }}{% if ann.time %} {{ ann.time }}{% endif %}</td>
+                    <td>{{ ann.location or '—' }}</td>
+                    <td>
+                        {% if ann.published %}
+                        <span class="admin-badge admin-badge--success">Опубликован</span>
+                        {% else %}
+                        <span class="admin-badge admin-badge--draft">Черновик</span>
+                        {% endif %}
+                    </td>
+                    <td class="admin-table__actions">
+                        <a href="{{ url_for('admin_announcement_edit', slug=ann.slug) }}" class="admin-btn admin-btn--sm">Редактировать</a>
+                        <form method="POST" action="{{ url_for('admin_announcement_delete', slug=ann.slug) }}" style="display:inline" onsubmit="return confirm('Удалить анонс?')">
+                            <button type="submit" class="admin-btn admin-btn--sm admin-btn--danger">Удалить</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="admin-empty">
+        <p>Анонсов пока нет.</p>
+        <a href="{{ url_for('admin_announcement_new') }}" class="admin-btn admin-btn--primary">Создать первый анонс</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

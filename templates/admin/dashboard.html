@@ -55,6 +55,11 @@
             <h3>Статьи</h3>
             <p>{{ articles|length }} статей</p>
         </a>
+        <a href="{{ url_for('admin_announcements') }}" class="admin-card">
+            <div class="admin-card__icon">📅</div>
+            <h3>Анонсы</h3>
+            <p>{{ announcements|length }} анонсов</p>
+        </a>
     </div>
 </div>
 

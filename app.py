@@ -49,6 +49,7 @@ def save_upload(file_storage, subfolder=""):
 DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 CONTENT_FILE = os.path.join(DATA_DIR, "content.json")
 ARTICLES_FILE = os.path.join(DATA_DIR, "articles.json")
+ANNOUNCEMENTS_FILE = os.path.join(DATA_DIR, "announcements.json")
 
 ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "admin")
 
@@ -72,6 +73,10 @@ def get_content():
 
 def get_articles():
     return load_json(ARTICLES_FILE)
+
+
+def get_announcements():
+    return load_json(ANNOUNCEMENTS_FILE)
 
 
 # ─── Template context ──────────────────────────────────────────
@@ -113,6 +118,14 @@ def services():
 def contact():
     data = get_content()
     return render_template("contact.html", data=data)
+
+
+@app.route("/announcements/")
+def announcements():
+    all_announcements = get_announcements()
+    data = get_content()
+    published = [a for a in all_announcements if a.get("published", False)]
+    return render_template("announcements.html", announcements=published, data=data)
 
 
 @app.route("/articles/")
@@ -167,7 +180,8 @@ def admin_logout():
 def admin_dashboard():
     content = get_content()
     artcls = get_articles()
-    return render_template("admin/dashboard.html", content=content, articles=artcls)
+    anns = get_announcements()
+    return render_template("admin/dashboard.html", content=content, articles=artcls, announcements=anns)
 
 
 # ─── Admin: Общие настройки ────────────────────────────────────
@@ -270,6 +284,7 @@ def admin_index():
             item["title"] = request.form.get(f"{prefix}title", item["title"])
             item["text"] = request.form.get(f"{prefix}text", item["text"])
             item["price"] = request.form.get(f"{prefix}price", item["price"])
+            item["link_id"] = request.form.get(f"{prefix}link_id", item.get("link_id", ""))
 
         # Process steps
         ps = content["process_steps"]
@@ -383,8 +398,16 @@ def admin_services():
 
         for i, svc in enumerate(sp["services"]):
             prefix = f"svc_{i}_"
+            svc["id"] = request.form.get(f"{prefix}id", svc.get("id", ""))
             svc["title"] = request.form.get(f"{prefix}title", svc["title"])
             svc["desc"] = request.form.get(f"{prefix}desc", svc["desc"])
+            svc["icon"] = request.form.get(f"{prefix}icon", svc.get("icon", ""))
+            svc["duration"] = request.form.get(f"{prefix}duration", svc.get("duration", ""))
+            svc["format"] = request.form.get(f"{prefix}format", svc.get("format", ""))
+            svc["for_whom"] = request.form.get(f"{prefix}for_whom", svc.get("for_whom", ""))
+
+            highlights = request.form.getlist(f"{prefix}highlight")
+            svc["highlights"] = [h.strip() for h in highlights if h.strip()]
 
             price_labels = request.form.getlist(f"{prefix}price_label")
             price_values = request.form.getlist(f"{prefix}price_value")
@@ -576,6 +599,98 @@ def admin_upload():
     if not path:
         return jsonify({"ok": False, "error": "Недопустимый формат файла"}), 400
     return jsonify({"ok": True, "path": path})
+
+
+# ─── Admin: Анонсы ──────────────────────────────────────────────
+
+@app.route("/admin/announcements")
+@login_required
+def admin_announcements():
+    anns = get_announcements()
+    return render_template("admin/announcements_list.html", announcements=anns)
+
+
+@app.route("/admin/announcements/new", methods=["GET", "POST"])
+@login_required
+def admin_announcement_new():
+    if request.method == "POST":
+        anns = get_announcements()
+        title = request.form.get("title", "").strip()
+        slug = request.form.get("slug", "").strip() or slugify(title)
+        image_path = ""
+        file = request.files.get("image_file")
+        if file and file.filename:
+            image_path = save_upload(file, "announcements") or ""
+        new_ann = {
+            "slug": slug,
+            "title": title,
+            "date": request.form.get("date", "").strip(),
+            "time": request.form.get("time", "").strip(),
+            "location": request.form.get("location", "").strip(),
+            "description": request.form.get("description", "").strip(),
+            "image": image_path,
+            "published": "published" in request.form,
+        }
+        anns.append(new_ann)
+        save_json(ANNOUNCEMENTS_FILE, anns)
+        flash("Анонс создан", "success")
+        return redirect(url_for("admin_announcements"))
+    return render_template("admin/edit_announcement.html", announcement=None, is_new=True)
+
+
+@app.route("/admin/announcements/<slug>/edit", methods=["GET", "POST"])
+@login_required
+def admin_announcement_edit(slug):
+    anns = get_announcements()
+    ann = next((a for a in anns if a["slug"] == slug), None)
+    if ann is None:
+        abort(404)
+
+    if request.method == "POST":
+        ann["title"] = request.form.get("title", ann["title"]).strip()
+        ann["slug"] = request.form.get("slug", ann["slug"]).strip()
+        ann["date"] = request.form.get("date", ann.get("date", "")).strip()
+        ann["time"] = request.form.get("time", ann.get("time", "")).strip()
+        ann["location"] = request.form.get("location", ann.get("location", "")).strip()
+        ann["description"] = request.form.get("description", ann.get("description", "")).strip()
+        # Handle image upload
+        file = request.files.get("image_file")
+        if file and file.filename:
+            new_image = save_upload(file, "announcements")
+            if new_image:
+                old_image = ann.get("image", "")
+                if old_image and old_image.startswith("uploads/"):
+                    old_path = os.path.join(app.static_folder, old_image)
+                    if os.path.exists(old_path):
+                        os.remove(old_path)
+                ann["image"] = new_image
+        if request.form.get("remove_image") == "1":
+            old_image = ann.get("image", "")
+            if old_image and old_image.startswith("uploads/"):
+                old_path = os.path.join(app.static_folder, old_image)
+                if os.path.exists(old_path):
+                    os.remove(old_path)
+            ann["image"] = ""
+        ann["published"] = "published" in request.form
+        save_json(ANNOUNCEMENTS_FILE, anns)
+        flash("Анонс обновлён", "success")
+        return redirect(url_for("admin_announcements"))
+    return render_template("admin/edit_announcement.html", announcement=ann, is_new=False)
+
+
+@app.route("/admin/announcements/<slug>/delete", methods=["POST"])
+@login_required
+def admin_announcement_delete(slug):
+    anns = get_announcements()
+    ann = next((a for a in anns if a["slug"] == slug), None)
+    if ann and ann.get("image", "").startswith("uploads/"):
+        old_path = os.path.join(app.static_folder, ann["image"])
+        if os.path.exists(old_path):
+            os.remove(old_path)
+    anns = [a for a in anns if a["slug"] != slug]
+    save_json(ANNOUNCEMENTS_FILE, anns)
+    flash("Анонс удалён", "success")
+    return redirect(url_for("admin_announcements"))
 
 
 # ─── Admin: Документы ───────────────────────────────────────────

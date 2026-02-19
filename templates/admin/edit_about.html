@@ -145,10 +145,14 @@
             </div>
             {% for item in content.about_page.principles['items'] %}
             <div class="admin-form__section admin-form__section--nested">
-                <h4>{{ item.icon }} {{ item.title }}</h4>
+                <h4>{{ item.title }}</h4>
                 <div class="admin-field">
-                    <label>Иконка (эмоджи)</label>
-                    <input type="text" name="princ_{{ loop.index0 }}_icon" value="{{ item.icon }}">
+                    <label>Иконка</label>
+                    <div class="icon-picker-field">
+                        <div class="icon-picker-preview" id="iconPreview_princ_{{ loop.index0 }}">{% if item.icon and 'fa-' in item.icon %}<i class="{{ item.icon }}"></i>{% elif item.icon %}{{ item.icon }}{% else %}<i class="fa-solid fa-icons" style="opacity:0.3"></i>{% endif %}</div>
+                        <input type="text" name="princ_{{ loop.index0 }}_icon" id="iconInput_princ_{{ loop.index0 }}" value="{{ item.icon }}" placeholder="fa-solid fa-heart">
+                        <button type="button" class="icon-picker-btn" onclick="openIconPicker('princ_{{ loop.index0 }}')">Выбрать</button>
+                    </div>
                 </div>
                 <div class="admin-field">
                     <label>Название</label>

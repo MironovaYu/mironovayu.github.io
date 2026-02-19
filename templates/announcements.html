@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}Анонсы — {{ site.name }}, {{ site.role|title }}{% endblock %}
+{% block description %}Предстоящие мероприятия, мастер-классы и консультации {{ site.name }}.{% endblock %}
+
+{% block content %}
+<!-- Announcements Hero -->
+<section class="section announcements-hero" style="padding-bottom: 1rem;">
+    <div class="container">
+        <div class="section__header fade-in" style="margin-bottom: 0;">
+            <span class="section__label">Мероприятия</span>
+            <h1 class="section__title" style="font-size: clamp(2rem, 4vw, 3rem);">Анонсы</h1>
+            <p class="section__subtitle">
+                Предстоящие события, мастер-классы и встречи
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Calendar -->
+<section class="section" style="padding-top: 0;">
+    <div class="container">
+        <div class="calendar fade-in" id="announcementsCalendar">
+            <div class="calendar__header">
+                <button class="calendar__nav-btn" id="calPrev" aria-label="Предыдущий месяц">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+                </button>
+                <h2 class="calendar__month" id="calMonth"></h2>
+                <button class="calendar__nav-btn" id="calNext" aria-label="Следующий месяц">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                </button>
+            </div>
+            <div class="calendar__weekdays">
+                <div class="calendar__weekday">Пн</div>
+                <div class="calendar__weekday">Вт</div>
+                <div class="calendar__weekday">Ср</div>
+                <div class="calendar__weekday">Чт</div>
+                <div class="calendar__weekday">Пт</div>
+                <div class="calendar__weekday">Сб</div>
+                <div class="calendar__weekday">Вс</div>
+            </div>
+            <div class="calendar__grid" id="calGrid"></div>
+        </div>
+
+        <!-- Upcoming list (below calendar) -->
+        <div class="announcements-upcoming fade-in" id="upcomingList"></div>
+    </div>
+</section>
+
+<!-- Modal -->
+<div class="ann-modal-overlay" id="annModalOverlay">
+    <div class="ann-modal" id="annModal">
+        <button class="ann-modal__close" id="annModalClose" aria-label="Закрыть">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+        <div class="ann-modal__image" id="annModalImage"></div>
+        <div class="ann-modal__body">
+            <h2 class="ann-modal__title" id="annModalTitle"></h2>
+            <div class="ann-modal__meta">
+                <div class="ann-modal__meta-item" id="annModalDate">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                    <span></span>
+                </div>
+                <div class="ann-modal__meta-item" id="annModalTime">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    <span></span>
+                </div>
+                <div class="ann-modal__meta-item" id="annModalLocation">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                    <span></span>
+                </div>
+            </div>
+            <div class="ann-modal__description" id="annModalDesc"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Pass announcements data to JS -->
+<script>
+    window.__announcements__ = {{ announcements | tojson }};
+</script>
+{% endblock %}

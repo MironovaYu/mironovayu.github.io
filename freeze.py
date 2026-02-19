@@ -48,6 +48,11 @@ def documents():
 
 
 @freezer.register_generator
+def announcements():
+    yield {}
+
+
+@freezer.register_generator
 def article():
     """Генерирует URL для каждой опубликованной статьи."""
     for art in get_articles():

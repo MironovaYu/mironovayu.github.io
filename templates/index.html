@@ -44,7 +44,7 @@
             <span class="section__label">{{ data.help_section.label }}</span>
             <h2 class="section__title">{{ data.help_section.title }}</h2>
         </div>
-        <div class="help-list">
+        <div class="help-list" id="helpList">
             {% for item in data.help_section['items'] %}
             <div class="help-item fade-in">
                 <div class="help-item__icon">✦</div>
@@ -52,6 +52,10 @@
             </div>
             {% endfor %}
         </div>
+        <button class="help-toggle" id="helpToggle" aria-expanded="false" aria-controls="helpList">
+            <span class="help-toggle__text">Ещё</span>
+            <i class="fa-solid fa-chevron-down help-toggle__icon"></i>
+        </button>
     </div>
 </section>
 
@@ -92,10 +96,15 @@
         <div class="cards-grid">
             {% for item in data.services_preview['items'] %}
             <div class="card fade-in">
-                <div class="card__icon">{{ item.icon }}</div>
-                <h3 class="card__title">{{ item.title }}</h3>
+                <div class="card__header">
+                    <div class="card__icon"><i class="{{ item.icon }}"></i></div>
+                    <h3 class="card__title">{{ item.title }}</h3>
+                </div>
                 <p class="card__text">{{ item.text }}</p>
-                <div class="card__price">{{ item.price }}</div>
+                <div class="card__footer">
+                    <span class="card__price">{{ item.price }}</span>
+                    <a href="{{ url_for('services') }}#{{ item.link_id }}" class="btn btn--outline btn--sm">Подробнее</a>
+                </div>
             </div>
             {% endfor %}
         </div>

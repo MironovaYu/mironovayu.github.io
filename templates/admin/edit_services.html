@@ -33,6 +33,10 @@
         <div class="admin-form__section">
             <h3>🔹 {{ svc.title }}</h3>
             <div class="admin-field">
+                <label>ID (якорь для ссылок) <small style="color:#999">Латиница и дефисы, напр. consultation</small></label>
+                <input type="text" name="svc_{{ svc_idx }}_id" value="{{ svc.id|default('', true) }}">
+            </div>
+            <div class="admin-field">
                 <label>Название</label>
                 <input type="text" name="svc_{{ svc_idx }}_title" value="{{ svc.title }}">
             </div>
@@ -40,6 +44,35 @@
                 <label>Подзаголовок</label>
                 <input type="text" name="svc_{{ svc_idx }}_desc" value="{{ svc.desc }}">
             </div>
+            <div class="admin-field">
+                <label>Иконка <small style="color:#999">Font Awesome класс, напр.: fa-solid fa-comments</small></label>
+                <input type="text" name="svc_{{ svc_idx }}_icon" value="{{ svc.icon|default('', true) }}">
+            </div>
+            <div class="admin-field-row">
+                <div class="admin-field" style="flex:1">
+                    <label>Длительность</label>
+                    <input type="text" name="svc_{{ svc_idx }}_duration" value="{{ svc.duration|default('', true) }}" placeholder="60 минут">
+                </div>
+                <div class="admin-field" style="flex:1">
+                    <label>Формат</label>
+                    <input type="text" name="svc_{{ svc_idx }}_format" value="{{ svc.format|default('', true) }}" placeholder="Очно / Онлайн">
+                </div>
+            </div>
+            <div class="admin-field">
+                <label>Для кого <small style="color:#999">Краткое описание целевой аудитории</small></label>
+                <textarea name="svc_{{ svc_idx }}_for_whom" rows="2">{{ svc.for_whom|default('', true) }}</textarea>
+            </div>
+
+            <h4>Ключевые преимущества</h4>
+            <div id="svcHighlights_{{ svc_idx }}">
+                {% for h in svc.get('highlights', []) %}
+                <div class="admin-field admin-field--removable">
+                    <input type="text" name="svc_{{ svc_idx }}_highlight" value="{{ h }}">
+                    <button type="button" class="admin-btn admin-btn--sm admin-btn--danger" onclick="this.parentElement.remove()">✕</button>
+                </div>
+                {% endfor %}
+            </div>
+            <button type="button" class="admin-btn admin-btn--outline" onclick="addSvcHighlight({{ svc_idx }})">+ Преимущество</button>
 
             <h4>Цены</h4>
             {% for price in svc.prices %}
@@ -114,6 +147,14 @@ function addSvcListItem(idx) {
     const div = document.createElement('div');
     div.className = 'admin-field admin-field--removable';
     div.innerHTML = '<input type="text" name="svc_' + idx + '_list_item" placeholder="Новый пункт..."><button type="button" class="admin-btn admin-btn--sm admin-btn--danger" onclick="this.parentElement.remove()">✕</button>';
+    container.appendChild(div);
+}
+
+function addSvcHighlight(idx) {
+    const container = document.getElementById('svcHighlights_' + idx);
+    const div = document.createElement('div');
+    div.className = 'admin-field admin-field--removable';
+    div.innerHTML = '<input type="text" name="svc_' + idx + '_highlight" placeholder="Преимущество..."><button type="button" class="admin-btn admin-btn--sm admin-btn--danger" onclick="this.parentElement.remove()">✕</button>';
     container.appendChild(div);
 }
 </script>

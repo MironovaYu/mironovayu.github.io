@@ -5,9 +5,9 @@
 
 {% block content %}
 <!-- Services Hero -->
-<section class="section" style="padding-bottom: 2rem;">
+<section class="section" style="padding-bottom: 1rem;">
     <div class="container">
-        <div class="section__header fade-in">
+        <div class="section__header fade-in" style="margin-bottom: 0;">
             <span class="section__label">{{ data.services_page.label }}</span>
             <h1 class="section__title" style="font-size: clamp(2rem, 4vw, 3rem);">{{ data.services_page.title }}</h1>
             <p class="section__subtitle">{{ data.services_page.subtitle }}</p>
@@ -15,45 +15,89 @@
     </div>
 </section>
 
-{% for svc in data.services_page.services %}
-<!-- {{ svc.title }} -->
-<section class="service-detail{% if svc.alt_bg %} section--alt{% endif %}">
+<section class="section" style="padding-top: 0;">
     <div class="container">
-        <div class="service-detail__inner{% if svc.reverse %} service-detail__inner--reverse{% endif %} fade-in">
-            <div class="service-detail__content">
-                <h3>{{ svc.title }}</h3>
-                <p class="service-detail__desc">{{ svc.desc }}</p>
-                {% for p in svc.paragraphs %}
-                <p>{{ p }}</p>
-                {% endfor %}
-                {% if svc.list_title %}
-                <p><strong>{{ svc.list_title }}</strong></p>
-                {% endif %}
-                {% if svc.list_items %}
-                <ul>
-                    {% for li in svc.list_items %}
-                    <li>{{ li }}</li>
-                    {% endfor %}
-                </ul>
-                {% endif %}
-            </div>
-            <div class="service-detail__price-box">
-                <h4>Стоимость</h4>
-                {% for price in svc.prices %}
-                <div class="service-price">
-                    <span class="service-price__label">{{ price.label }}</span>
-                    <span class="service-price__value">{{ price.value }}</span>
+        <div class="services-accordion">
+            {% for svc in data.services_page.services %}
+            <div class="svc-card fade-in" id="{{ svc.id }}">
+                <button class="svc-card__header" aria-expanded="false">
+                    {% if svc.icon %}
+                    <div class="svc-card__icon">
+                        <i class="{{ svc.icon }}"></i>
+                    </div>
+                    {% endif %}
+                    <div class="svc-card__summary">
+                        <h3 class="svc-card__title">{{ svc.title }}</h3>
+                        <p class="svc-card__desc">{{ svc.desc }}</p>
+                        {% if svc.duration or svc.format %}
+                        <div class="svc-card__tags">
+                            {% if svc.duration %}
+                            <span class="svc-tag"><i class="fa-regular fa-clock"></i> {{ svc.duration }}</span>
+                            {% endif %}
+                            {% if svc.format %}
+                            <span class="svc-tag"><i class="fa-solid fa-location-dot"></i> {{ svc.format }}</span>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="svc-card__header-right">
+                        <span class="svc-card__price">{{ svc.prices[0].value }}</span>
+                        <i class="fa-solid fa-chevron-down svc-card__arrow"></i>
+                    </div>
+                </button>
+                <div class="svc-card__body">
+                    <div class="svc-card__body-inner">
+                        <div class="svc-card__content">
+                            {% if svc.for_whom %}
+                            <div class="svc-card__for-whom">
+                                <div class="svc-card__for-whom-icon"><i class="fa-solid fa-heart"></i></div>
+                                <p>{{ svc.for_whom }}</p>
+                            </div>
+                            {% endif %}
+                            {% if svc.highlights %}
+                            <div class="svc-card__highlights">
+                                {% for h in svc.highlights %}
+                                <div class="svc-highlight">
+                                    <i class="fa-solid fa-check"></i>
+                                    <span>{{ h }}</span>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                            {% for p in svc.paragraphs %}
+                            <p>{{ p }}</p>
+                            {% endfor %}
+                            {% if svc.list_title %}
+                            <p><strong>{{ svc.list_title }}</strong></p>
+                            {% endif %}
+                            {% if svc.list_items %}
+                            <ul>
+                                {% for li in svc.list_items %}
+                                <li>{{ li }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% endif %}
+                        </div>
+                        <div class="svc-card__prices">
+                            <h4>Стоимость</h4>
+                            {% for price in svc.prices %}
+                            <div class="service-price">
+                                <span class="service-price__label">{{ price.label }}</span>
+                                <span class="service-price__value">{{ price.value }}</span>
+                            </div>
+                            {% endfor %}
+                            <a href="{{ site.telegram_link }}" class="btn btn--telegram" target="_blank" rel="noopener">
+                                <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/></svg>
+                                Записаться
+                            </a>
+                        </div>
+                    </div>
                 </div>
-                {% endfor %}
-                <a href="{{ site.telegram_link }}" class="btn btn--telegram" target="_blank" rel="noopener">
-                    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/></svg>
-                    Записаться
-                </a>
             </div>
+            {% endfor %}
         </div>
     </div>
 </section>
-{% endfor %}
 
 <!-- CTA -->
 <section class="cta">

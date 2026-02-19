@@ -169,10 +169,14 @@
 
             {% for item in content.services_preview['items'] %}
             <div class="admin-form__section admin-form__section--nested">
-                <h4>{{ item.icon }} {{ item.title }}</h4>
+                <h4>{{ item.title }}</h4>
                 <div class="admin-field">
-                    <label>Иконка (эмоджи)</label>
-                    <input type="text" name="sp_{{ loop.index0 }}_icon" value="{{ item.icon }}">
+                    <label>Иконка</label>
+                    <div class="icon-picker-field">
+                        <div class="icon-picker-preview" id="iconPreview_sp_{{ loop.index0 }}"><i class="{{ item.icon }}"></i></div>
+                        <input type="text" name="sp_{{ loop.index0 }}_icon" id="iconInput_sp_{{ loop.index0 }}" value="{{ item.icon }}" placeholder="fa-solid fa-handshake">
+                        <button type="button" class="icon-picker-btn" onclick="openIconPicker('sp_{{ loop.index0 }}')">Выбрать</button>
+                    </div>
                 </div>
                 <div class="admin-field">
                     <label>Название</label>
@@ -185,6 +189,10 @@
                 <div class="admin-field">
                     <label>Цена</label>
                     <input type="text" name="sp_{{ loop.index0 }}_price" value="{{ item.price }}">
+                </div>
+                <div class="admin-field">
+                    <label>Ссылка на услугу <small style="color:#999">(ID услуги на странице «Услуги»)</small></label>
+                    <input type="text" name="sp_{{ loop.index0 }}_link_id" value="{{ item.link_id|default('', true) }}">
                 </div>
             </div>
             {% endfor %}
