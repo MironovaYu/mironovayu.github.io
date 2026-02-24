@@ -28,10 +28,14 @@
         </div>
 
         <!-- ═══ Services ═══ -->
+        <div id="servicesContainer">
         {% for svc in content.services_page.services %}
         {% set svc_idx = loop.index0 %}
-        <div class="admin-form__section">
-            <h3>🔹 {{ svc.title }}</h3>
+        <div class="admin-form__section" data-svc-block data-svc-idx="{{ svc_idx }}">
+            <div class="admin-section-header">
+                <h3>🔹 {{ svc.title }}</h3>
+                <button type="button" class="admin-btn admin-btn--sm admin-btn--danger" onclick="this.closest('[data-svc-block]').remove()">✕ Удалить услугу</button>
+            </div>
             <div class="admin-field">
                 <label>ID (якорь для ссылок) <small style="color:#999">Латиница и дефисы, напр. consultation</small></label>
                 <input type="text" name="svc_{{ svc_idx }}_id" value="{{ svc.id|default('', true) }}">
@@ -45,8 +49,12 @@
                 <input type="text" name="svc_{{ svc_idx }}_desc" value="{{ svc.desc }}">
             </div>
             <div class="admin-field">
-                <label>Иконка <small style="color:#999">Font Awesome класс, напр.: fa-solid fa-comments</small></label>
-                <input type="text" name="svc_{{ svc_idx }}_icon" value="{{ svc.icon|default('', true) }}">
+                <label>Иконка</label>
+                <div class="icon-picker-field">
+                    <div class="icon-picker-preview" id="iconPreview_svc_{{ svc_idx }}">{% if svc.icon and 'fa-' in svc.icon %}<i class="{{ svc.icon }}"></i>{% else %}<i class="fa-solid fa-icons" style="opacity:0.3"></i>{% endif %}</div>
+                    <input type="hidden" name="svc_{{ svc_idx }}_icon" id="iconInput_svc_{{ svc_idx }}" value="{{ svc.icon|default('', true) }}">
+                    <button type="button" class="icon-picker-btn" onclick="openIconPicker('svc_{{ svc_idx }}')">Выбрать</button>
+                </div>
             </div>
             <div class="admin-field-row">
                 <div class="admin-field" style="flex:1">
@@ -74,15 +82,19 @@
             </div>
             <button type="button" class="admin-btn admin-btn--outline" onclick="addSvcHighlight({{ svc_idx }})">+ Преимущество</button>
 
-            <h4>Цены</h4>
-            {% for price in svc.prices %}
-            <div class="admin-field-row">
-                <input type="text" name="svc_{{ svc_idx }}_price_label" value="{{ price.label }}" placeholder="Метка">
-                <input type="text" name="svc_{{ svc_idx }}_price_value" value="{{ price.value }}" placeholder="Цена">
+            <h4 style="margin-top: 1rem;">Цены</h4>
+            <div id="svcPrices_{{ svc_idx }}">
+                {% for price in svc.prices %}
+                <div class="admin-field-row admin-field--removable" style="display:flex; gap:0.5rem; align-items:flex-start;">
+                    <input type="text" name="svc_{{ svc_idx }}_price_label" value="{{ price.label }}" placeholder="Метка" style="flex:1">
+                    <input type="text" name="svc_{{ svc_idx }}_price_value" value="{{ price.value }}" placeholder="Цена" style="flex:1">
+                    <button type="button" class="admin-btn admin-btn--sm admin-btn--danger" onclick="this.parentElement.remove()">✕</button>
+                </div>
+                {% endfor %}
             </div>
-            {% endfor %}
+            <button type="button" class="admin-btn admin-btn--outline" onclick="addSvcPrice({{ svc_idx }})">+ Цена</button>
 
-            <h4>Описание (параграфы)</h4>
+            <h4 style="margin-top: 1rem;">Описание (параграфы)</h4>
             <div id="svcParas_{{ svc_idx }}">
                 {% for p in svc.paragraphs %}
                 <div class="admin-field admin-field--removable">
@@ -93,7 +105,6 @@
             </div>
             <button type="button" class="admin-btn admin-btn--outline" onclick="addSvcPara({{ svc_idx }})">+ Параграф</button>
 
-            {% if svc.list_title is defined or svc.list_items is defined %}
             <h4 style="margin-top: 1rem;">Список</h4>
             <div class="admin-field">
                 <label>Заголовок списка</label>
@@ -108,9 +119,12 @@
                 {% endfor %}
             </div>
             <button type="button" class="admin-btn admin-btn--outline" onclick="addSvcListItem({{ svc_idx }})">+ Пункт списка</button>
-            {% endif %}
         </div>
         {% endfor %}
+        </div>
+        <div style="margin-bottom: 1.5rem;">
+            <button type="button" class="admin-btn admin-btn--outline" onclick="addService()">+ Добавить услугу</button>
+        </div>
 
         <!-- ═══ CTA ═══ -->
         <div class="admin-form__section">
@@ -134,28 +148,60 @@
 </div>
 
 <script>
+var svcCounter = {{ content.services_page.services|length }};
+
 function addSvcPara(idx) {
-    const container = document.getElementById('svcParas_' + idx);
-    const div = document.createElement('div');
+    var container = document.getElementById('svcParas_' + idx);
+    var div = document.createElement('div');
     div.className = 'admin-field admin-field--removable';
     div.innerHTML = '<textarea name="svc_' + idx + '_paragraph" rows="3" placeholder="Новый параграф..."></textarea><button type="button" class="admin-btn admin-btn--sm admin-btn--danger" onclick="this.parentElement.remove()">✕</button>';
     container.appendChild(div);
 }
 
 function addSvcListItem(idx) {
-    const container = document.getElementById('svcList_' + idx);
-    const div = document.createElement('div');
+    var container = document.getElementById('svcList_' + idx);
+    var div = document.createElement('div');
     div.className = 'admin-field admin-field--removable';
     div.innerHTML = '<input type="text" name="svc_' + idx + '_list_item" placeholder="Новый пункт..."><button type="button" class="admin-btn admin-btn--sm admin-btn--danger" onclick="this.parentElement.remove()">✕</button>';
     container.appendChild(div);
 }
 
 function addSvcHighlight(idx) {
-    const container = document.getElementById('svcHighlights_' + idx);
-    const div = document.createElement('div');
+    var container = document.getElementById('svcHighlights_' + idx);
+    var div = document.createElement('div');
     div.className = 'admin-field admin-field--removable';
     div.innerHTML = '<input type="text" name="svc_' + idx + '_highlight" placeholder="Преимущество..."><button type="button" class="admin-btn admin-btn--sm admin-btn--danger" onclick="this.parentElement.remove()">✕</button>';
     container.appendChild(div);
+}
+
+function addSvcPrice(idx) {
+    var container = document.getElementById('svcPrices_' + idx);
+    var div = document.createElement('div');
+    div.className = 'admin-field-row admin-field--removable';
+    div.style.cssText = 'display:flex; gap:0.5rem; align-items:flex-start;';
+    div.innerHTML = '<input type="text" name="svc_' + idx + '_price_label" placeholder="Метка" style="flex:1"><input type="text" name="svc_' + idx + '_price_value" placeholder="Цена" style="flex:1"><button type="button" class="admin-btn admin-btn--sm admin-btn--danger" onclick="this.parentElement.remove()">✕</button>';
+    container.appendChild(div);
+}
+
+function addService() {
+    var idx = svcCounter++;
+    var container = document.getElementById('servicesContainer');
+    var section = document.createElement('div');
+    section.className = 'admin-form__section';
+    section.setAttribute('data-svc-block', '');
+    section.setAttribute('data-svc-idx', idx);
+    section.innerHTML = '<div class="admin-section-header"><h3>🔹 Новая услуга</h3><button type="button" class="admin-btn admin-btn--sm admin-btn--danger" onclick="this.closest(\'[data-svc-block]\').remove()">✕ Удалить услугу</button></div>'
+        + '<div class="admin-field"><label>ID (якорь)</label><input type="text" name="svc_' + idx + '_id" placeholder="my-service"></div>'
+        + '<div class="admin-field"><label>Название</label><input type="text" name="svc_' + idx + '_title" placeholder="Название услуги"></div>'
+        + '<div class="admin-field"><label>Подзаголовок</label><input type="text" name="svc_' + idx + '_desc" placeholder="Краткое описание"></div>'
+        + '<div class="admin-field"><label>Иконка</label><div class="icon-picker-field"><div class="icon-picker-preview" id="iconPreview_svc_' + idx + '"><i class="fa-solid fa-icons" style="opacity:0.3"></i></div><input type="hidden" name="svc_' + idx + '_icon" id="iconInput_svc_' + idx + '" value=""><button type="button" class="icon-picker-btn" onclick="openIconPicker(\'svc_' + idx + '\')">Выбрать</button></div></div>'
+        + '<div class="admin-field-row"><div class="admin-field" style="flex:1"><label>Длительность</label><input type="text" name="svc_' + idx + '_duration" placeholder="60 минут"></div><div class="admin-field" style="flex:1"><label>Формат</label><input type="text" name="svc_' + idx + '_format" placeholder="Очно / Онлайн"></div></div>'
+        + '<div class="admin-field"><label>Для кого</label><textarea name="svc_' + idx + '_for_whom" rows="2" placeholder="Целевая аудитория..."></textarea></div>'
+        + '<h4>Ключевые преимущества</h4><div id="svcHighlights_' + idx + '"></div><button type="button" class="admin-btn admin-btn--outline" onclick="addSvcHighlight(' + idx + ')">+ Преимущество</button>'
+        + '<h4 style="margin-top:1rem">Цены</h4><div id="svcPrices_' + idx + '"></div><button type="button" class="admin-btn admin-btn--outline" onclick="addSvcPrice(' + idx + ')">+ Цена</button>'
+        + '<h4 style="margin-top:1rem">Описание (параграфы)</h4><div id="svcParas_' + idx + '"></div><button type="button" class="admin-btn admin-btn--outline" onclick="addSvcPara(' + idx + ')">+ Параграф</button>'
+        + '<h4 style="margin-top:1rem">Список</h4><div class="admin-field"><label>Заголовок списка</label><input type="text" name="svc_' + idx + '_list_title" placeholder="Заголовок списка"></div><div id="svcList_' + idx + '"></div><button type="button" class="admin-btn admin-btn--outline" onclick="addSvcListItem(' + idx + ')">+ Пункт списка</button>';
+    container.appendChild(section);
 }
 </script>
 {% endblock %}

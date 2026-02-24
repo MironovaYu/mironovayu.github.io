@@ -83,23 +83,29 @@
                 <label for="approach_subtitle">Подзаголовок</label>
                 <textarea id="approach_subtitle" name="approach_subtitle" rows="2">{{ content.about_page.approach.subtitle }}</textarea>
             </div>
-            {% for item in content.about_page.approach['items'] %}
-            <div class="admin-form__section admin-form__section--nested">
-                <h4>Пункт {{ item.num }}</h4>
-                <div class="admin-field">
-                    <label>Номер</label>
-                    <input type="text" name="approach_{{ loop.index0 }}_num" value="{{ item.num }}">
+            <div id="approachItems">
+                {% for item in content.about_page.approach['items'] %}
+                <div class="admin-form__section admin-form__section--nested" data-approach-item>
+                    <div class="admin-section-header">
+                        <h4>Пункт {{ item.num }}</h4>
+                        <button type="button" class="admin-btn admin-btn--sm admin-btn--danger" onclick="this.closest('[data-approach-item]').remove()">✕</button>
+                    </div>
+                    <div class="admin-field">
+                        <label>Номер</label>
+                        <input type="text" name="approach_item_num" value="{{ item.num }}">
+                    </div>
+                    <div class="admin-field">
+                        <label>Заголовок</label>
+                        <input type="text" name="approach_item_title" value="{{ item.title }}">
+                    </div>
+                    <div class="admin-field">
+                        <label>Текст</label>
+                        <textarea name="approach_item_text" rows="3">{{ item.text }}</textarea>
+                    </div>
                 </div>
-                <div class="admin-field">
-                    <label>Заголовок</label>
-                    <input type="text" name="approach_{{ loop.index0 }}_title" value="{{ item.title }}">
-                </div>
-                <div class="admin-field">
-                    <label>Текст</label>
-                    <textarea name="approach_{{ loop.index0 }}_text" rows="3">{{ item.text }}</textarea>
-                </div>
+                {% endfor %}
             </div>
-            {% endfor %}
+            <button type="button" class="admin-btn admin-btn--outline" onclick="addApproachItem()">+ Добавить пункт</button>
         </div>
 
         <!-- ═══ Qualifications ═══ -->
@@ -113,23 +119,29 @@
                 <label for="quals_title">Заголовок</label>
                 <input type="text" id="quals_title" name="quals_title" value="{{ content.about_page.qualifications.title }}">
             </div>
-            {% for item in content.about_page.qualifications['items'] %}
-            <div class="admin-form__section admin-form__section--nested">
-                <h4>{{ item.title }}</h4>
-                <div class="admin-field">
-                    <label>Категория</label>
-                    <input type="text" name="qual_{{ loop.index0 }}_year" value="{{ item.year }}">
+            <div id="qualItems">
+                {% for item in content.about_page.qualifications['items'] %}
+                <div class="admin-form__section admin-form__section--nested" data-qual-item>
+                    <div class="admin-section-header">
+                        <h4>{{ item.title or item.year }}</h4>
+                        <button type="button" class="admin-btn admin-btn--sm admin-btn--danger" onclick="this.closest('[data-qual-item]').remove()">✕</button>
+                    </div>
+                    <div class="admin-field">
+                        <label>Категория</label>
+                        <input type="text" name="qual_item_year" value="{{ item.year }}">
+                    </div>
+                    <div class="admin-field">
+                        <label>Название</label>
+                        <input type="text" name="qual_item_title" value="{{ item.title }}">
+                    </div>
+                    <div class="admin-field">
+                        <label>Описание</label>
+                        <textarea name="qual_item_desc" rows="2">{{ item.desc }}</textarea>
+                    </div>
                 </div>
-                <div class="admin-field">
-                    <label>Название</label>
-                    <input type="text" name="qual_{{ loop.index0 }}_title" value="{{ item.title }}">
-                </div>
-                <div class="admin-field">
-                    <label>Описание</label>
-                    <textarea name="qual_{{ loop.index0 }}_desc" rows="2">{{ item.desc }}</textarea>
-                </div>
+                {% endfor %}
             </div>
-            {% endfor %}
+            <button type="button" class="admin-btn admin-btn--outline" onclick="addQualItem()">+ Добавить пункт</button>
         </div>
 
         <!-- ═══ Principles ═══ -->
@@ -143,27 +155,33 @@
                 <label for="princ_title">Заголовок</label>
                 <input type="text" id="princ_title" name="princ_title" value="{{ content.about_page.principles.title }}">
             </div>
-            {% for item in content.about_page.principles['items'] %}
-            <div class="admin-form__section admin-form__section--nested">
-                <h4>{{ item.title }}</h4>
-                <div class="admin-field">
-                    <label>Иконка</label>
-                    <div class="icon-picker-field">
-                        <div class="icon-picker-preview" id="iconPreview_princ_{{ loop.index0 }}">{% if item.icon and 'fa-' in item.icon %}<i class="{{ item.icon }}"></i>{% elif item.icon %}{{ item.icon }}{% else %}<i class="fa-solid fa-icons" style="opacity:0.3"></i>{% endif %}</div>
-                        <input type="text" name="princ_{{ loop.index0 }}_icon" id="iconInput_princ_{{ loop.index0 }}" value="{{ item.icon }}" placeholder="fa-solid fa-heart">
-                        <button type="button" class="icon-picker-btn" onclick="openIconPicker('princ_{{ loop.index0 }}')">Выбрать</button>
+            <div id="princItems">
+                {% for item in content.about_page.principles['items'] %}
+                <div class="admin-form__section admin-form__section--nested" data-princ-item>
+                    <div class="admin-section-header">
+                        <h4>{{ item.title }}</h4>
+                        <button type="button" class="admin-btn admin-btn--sm admin-btn--danger" onclick="this.closest('[data-princ-item]').remove()">✕</button>
+                    </div>
+                    <div class="admin-field">
+                        <label>Иконка</label>
+                        <div class="icon-picker-field">
+                            <div class="icon-picker-preview" id="iconPreview_princ_{{ loop.index0 }}">{% if item.icon and 'fa-' in item.icon %}<i class="{{ item.icon }}"></i>{% elif item.icon %}{{ item.icon }}{% else %}<i class="fa-solid fa-icons" style="opacity:0.3"></i>{% endif %}</div>
+                            <input type="hidden" name="princ_item_icon" id="iconInput_princ_{{ loop.index0 }}" value="{{ item.icon }}">
+                            <button type="button" class="icon-picker-btn" onclick="openIconPicker('princ_{{ loop.index0 }}')">Выбрать</button>
+                        </div>
+                    </div>
+                    <div class="admin-field">
+                        <label>Название</label>
+                        <input type="text" name="princ_item_title" value="{{ item.title }}">
+                    </div>
+                    <div class="admin-field">
+                        <label>Текст</label>
+                        <textarea name="princ_item_text" rows="2">{{ item.text }}</textarea>
                     </div>
                 </div>
-                <div class="admin-field">
-                    <label>Название</label>
-                    <input type="text" name="princ_{{ loop.index0 }}_title" value="{{ item.title }}">
-                </div>
-                <div class="admin-field">
-                    <label>Текст</label>
-                    <textarea name="princ_{{ loop.index0 }}_text" rows="2">{{ item.text }}</textarea>
-                </div>
+                {% endfor %}
             </div>
-            {% endfor %}
+            <button type="button" class="admin-btn admin-btn--outline" onclick="addPrincItem()">+ Добавить принцип</button>
         </div>
 
         <!-- ═══ CTA ═══ -->
@@ -188,19 +206,59 @@
 </div>
 
 <script>
+var princCounter = {{ content.about_page.principles["items"]|length }};
+
 function addParagraph() {
-    const container = document.getElementById('introParas');
-    const div = document.createElement('div');
+    var container = document.getElementById('introParas');
+    var div = document.createElement('div');
     div.className = 'admin-field admin-field--removable';
     div.innerHTML = '<textarea name="intro_paragraph" rows="3" placeholder="Новый параграф..."></textarea><button type="button" class="admin-btn admin-btn--sm admin-btn--danger" onclick="this.parentElement.remove()">✕</button>';
     container.appendChild(div);
 }
 
+function addApproachItem() {
+    var container = document.getElementById('approachItems');
+    var count = container.querySelectorAll('[data-approach-item]').length + 1;
+    var div = document.createElement('div');
+    div.className = 'admin-form__section admin-form__section--nested';
+    div.setAttribute('data-approach-item', '');
+    div.innerHTML = '<div class="admin-section-header"><h4>Новый пункт</h4><button type="button" class="admin-btn admin-btn--sm admin-btn--danger" onclick="this.closest(\'[data-approach-item]\').remove()">✕</button></div>'
+        + '<div class="admin-field"><label>Номер</label><input type="text" name="approach_item_num" value="' + count + '"></div>'
+        + '<div class="admin-field"><label>Заголовок</label><input type="text" name="approach_item_title" placeholder="Заголовок"></div>'
+        + '<div class="admin-field"><label>Текст</label><textarea name="approach_item_text" rows="3" placeholder="Текст..."></textarea></div>';
+    container.appendChild(div);
+}
+
+function addQualItem() {
+    var container = document.getElementById('qualItems');
+    var div = document.createElement('div');
+    div.className = 'admin-form__section admin-form__section--nested';
+    div.setAttribute('data-qual-item', '');
+    div.innerHTML = '<div class="admin-section-header"><h4>Новый пункт</h4><button type="button" class="admin-btn admin-btn--sm admin-btn--danger" onclick="this.closest(\'[data-qual-item]\').remove()">✕</button></div>'
+        + '<div class="admin-field"><label>Категория</label><input type="text" name="qual_item_year" placeholder="Категория"></div>'
+        + '<div class="admin-field"><label>Название</label><input type="text" name="qual_item_title" placeholder="Название"></div>'
+        + '<div class="admin-field"><label>Описание</label><textarea name="qual_item_desc" rows="2" placeholder="Описание..."></textarea></div>';
+    container.appendChild(div);
+}
+
+function addPrincItem() {
+    var idx = princCounter++;
+    var container = document.getElementById('princItems');
+    var div = document.createElement('div');
+    div.className = 'admin-form__section admin-form__section--nested';
+    div.setAttribute('data-princ-item', '');
+    div.innerHTML = '<div class="admin-section-header"><h4>Новый принцип</h4><button type="button" class="admin-btn admin-btn--sm admin-btn--danger" onclick="this.closest(\'[data-princ-item]\').remove()">✕</button></div>'
+        + '<div class="admin-field"><label>Иконка</label><div class="icon-picker-field"><div class="icon-picker-preview" id="iconPreview_princ_' + idx + '"><i class="fa-solid fa-icons" style="opacity:0.3"></i></div><input type="hidden" name="princ_item_icon" id="iconInput_princ_' + idx + '" value=""><button type="button" class="icon-picker-btn" onclick="openIconPicker(\'princ_' + idx + '\')">Выбрать</button></div></div>'
+        + '<div class="admin-field"><label>Название</label><input type="text" name="princ_item_title" placeholder="Название"></div>'
+        + '<div class="admin-field"><label>Текст</label><textarea name="princ_item_text" rows="2" placeholder="Текст..."></textarea></div>';
+    container.appendChild(div);
+}
+
 function previewField(input, imgId, removeId) {
     if (input.files && input.files[0]) {
-        const reader = new FileReader();
+        var reader = new FileReader();
         reader.onload = function(e) {
-            const img = document.getElementById(imgId);
+            var img = document.getElementById(imgId);
             img.src = e.target.result;
             img.parentElement.style.display = '';
         };

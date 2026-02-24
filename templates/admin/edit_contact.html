@@ -38,19 +38,25 @@
                 <label for="process_title">Заголовок секции</label>
                 <input type="text" id="process_title" name="process_title" value="{{ content.contact_page.process.title }}">
             </div>
+            <div id="contactSteps">
             {% for step in content.contact_page.process.steps %}
-            <div class="admin-form__section admin-form__section--nested">
-                <h4>Шаг {{ loop.index }}</h4>
+            <div class="admin-form__section admin-form__section--nested" data-contact-step>
+                <div class="admin-section-header">
+                    <h4>Шаг {{ loop.index }}</h4>
+                    <button type="button" class="admin-btn admin-btn--sm admin-btn--danger" onclick="this.closest('[data-contact-step]').remove()">✕</button>
+                </div>
                 <div class="admin-field">
                     <label>Заголовок</label>
-                    <input type="text" name="step_{{ loop.index0 }}_title" value="{{ step.title }}">
+                    <input type="text" name="step_title" value="{{ step.title }}">
                 </div>
                 <div class="admin-field">
                     <label>Описание</label>
-                    <textarea name="step_{{ loop.index0 }}_text" rows="2">{{ step.text }}</textarea>
+                    <textarea name="step_text" rows="2">{{ step.text }}</textarea>
                 </div>
             </div>
             {% endfor %}
+            </div>
+            <button type="button" class="admin-btn admin-btn--outline" onclick="addContactStep()">+ Шаг</button>
         </div>
 
         <!-- ═══ CTA ═══ -->
@@ -73,4 +79,18 @@
         <button type="submit" class="admin-btn admin-btn--primary">Сохранить</button>
     </form>
 </div>
+
+<script>
+function addContactStep() {
+    var container = document.getElementById('contactSteps');
+    var num = container.querySelectorAll('[data-contact-step]').length + 1;
+    var div = document.createElement('div');
+    div.className = 'admin-form__section admin-form__section--nested';
+    div.setAttribute('data-contact-step', '');
+    div.innerHTML = '<div class="admin-section-header"><h4>Шаг ' + num + '</h4><button type="button" class="admin-btn admin-btn--sm admin-btn--danger" onclick="this.closest(\'[data-contact-step]\').remove()">✕</button></div>'
+        + '<div class="admin-field"><label>Заголовок</label><input type="text" name="step_title" placeholder="Заголовок шага"></div>'
+        + '<div class="admin-field"><label>Описание</label><textarea name="step_text" rows="2" placeholder="Описание шага..."></textarea></div>';
+    container.appendChild(div);
+}
+</script>
 {% endblock %}

@@ -52,9 +52,11 @@
                 <textarea id="excerpt" name="excerpt" rows="3">{{ article.excerpt if article else '' }}</textarea>
             </div>
             <div class="admin-field">
-                <label for="content">Содержание (HTML)</label>
-                <textarea id="content" name="content" rows="20" class="admin-field--monospace">{{ article.content if article else '' }}</textarea>
-                <small>Используйте HTML-теги: &lt;p&gt;, &lt;h3&gt;, &lt;strong&gt;, &lt;em&gt;, &lt;ul&gt;, &lt;li&gt;, &lt;blockquote&gt;</small>
+                <label>Содержание</label>
+                <div class="admin-editor-wrap">
+                    <div id="editor">{{ article.content|safe if article else '' }}</div>
+                </div>
+                <textarea id="content" name="content" style="display:none">{{ article.content if article else '' }}</textarea>
             </div>
             <div class="admin-field admin-field--checkbox">
                 <label>
@@ -70,6 +72,23 @@
 </div>
 
 <script>
+var quill = new Quill('#editor', {
+    theme: 'snow',
+    modules: {
+        toolbar: [
+            [{ header: [3, 4, false] }],
+            ['bold', 'italic', 'underline'],
+            [{ list: 'ordered' }, { list: 'bullet' }],
+            ['blockquote', 'link'],
+            ['clean']
+        ]
+    }
+});
+
+document.querySelector('.admin-form').addEventListener('submit', function() {
+    document.getElementById('content').value = quill.root.innerHTML;
+});
+
 function previewImage(input) {
     if (input.files && input.files[0]) {
         const reader = new FileReader();

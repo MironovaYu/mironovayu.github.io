@@ -278,21 +278,35 @@ def admin_index():
         svp["title"] = request.form.get("services_preview_title", svp["title"])
         svp["subtitle"] = request.form.get("services_preview_subtitle", svp["subtitle"])
         svp["cta_text"] = request.form.get("services_preview_cta_text", svp["cta_text"])
-        for i, item in enumerate(svp["items"]):
-            prefix = f"sp_{i}_"
-            item["icon"] = request.form.get(f"{prefix}icon", item["icon"])
-            item["title"] = request.form.get(f"{prefix}title", item["title"])
-            item["text"] = request.form.get(f"{prefix}text", item["text"])
-            item["price"] = request.form.get(f"{prefix}price", item["price"])
-            item["link_id"] = request.form.get(f"{prefix}link_id", item.get("link_id", ""))
+        sp_icons = request.form.getlist("sp_icon")
+        sp_titles = request.form.getlist("sp_title")
+        sp_texts = request.form.getlist("sp_text")
+        sp_prices = request.form.getlist("sp_price")
+        sp_link_ids = request.form.getlist("sp_link_id")
+        svp["items"] = []
+        for i in range(len(sp_titles)):
+            if sp_titles[i].strip():
+                svp["items"].append({
+                    "icon": sp_icons[i].strip() if i < len(sp_icons) else "",
+                    "title": sp_titles[i].strip(),
+                    "text": sp_texts[i].strip() if i < len(sp_texts) else "",
+                    "price": sp_prices[i].strip() if i < len(sp_prices) else "",
+                    "link_id": sp_link_ids[i].strip() if i < len(sp_link_ids) else "",
+                })
 
         # Process steps
         ps = content["process_steps"]
         ps["label"] = request.form.get("process_label", ps["label"])
         ps["title"] = request.form.get("process_title", ps["title"])
-        for i, step in enumerate(ps["steps"]):
-            step["title"] = request.form.get(f"process_step_{i}_title", step["title"])
-            step["text"] = request.form.get(f"process_step_{i}_text", step["text"])
+        step_titles = request.form.getlist("process_step_title")
+        step_texts = request.form.getlist("process_step_text")
+        ps["steps"] = []
+        for i in range(len(step_titles)):
+            if step_titles[i].strip():
+                ps["steps"].append({
+                    "title": step_titles[i].strip(),
+                    "text": step_texts[i].strip() if i < len(step_texts) else "",
+                })
 
         # CTA
         cta = content["cta"]
@@ -346,31 +360,48 @@ def admin_about():
         approach["label"] = request.form.get("approach_label", approach["label"])
         approach["title"] = request.form.get("approach_title", approach["title"])
         approach["subtitle"] = request.form.get("approach_subtitle", approach["subtitle"])
-        for i, item in enumerate(approach["items"]):
-            prefix = f"approach_{i}_"
-            item["num"] = request.form.get(f"{prefix}num", item["num"])
-            item["title"] = request.form.get(f"{prefix}title", item["title"])
-            item["text"] = request.form.get(f"{prefix}text", item["text"])
+        a_nums = request.form.getlist("approach_item_num")
+        a_titles = request.form.getlist("approach_item_title")
+        a_texts = request.form.getlist("approach_item_text")
+        approach["items"] = []
+        for i in range(len(a_titles)):
+            if a_titles[i].strip():
+                approach["items"].append({
+                    "num": a_nums[i].strip() if i < len(a_nums) else str(i + 1),
+                    "title": a_titles[i].strip(),
+                    "text": a_texts[i].strip() if i < len(a_texts) else "",
+                })
 
         # Qualifications
         quals = ap["qualifications"]
         quals["label"] = request.form.get("quals_label", quals["label"])
         quals["title"] = request.form.get("quals_title", quals["title"])
-        for i, item in enumerate(quals["items"]):
-            prefix = f"qual_{i}_"
-            item["year"] = request.form.get(f"{prefix}year", item["year"])
-            item["title"] = request.form.get(f"{prefix}title", item["title"])
-            item["desc"] = request.form.get(f"{prefix}desc", item["desc"])
+        q_years = request.form.getlist("qual_item_year")
+        q_titles = request.form.getlist("qual_item_title")
+        q_descs = request.form.getlist("qual_item_desc")
+        quals["items"] = []
+        for i in range(max(len(q_years), len(q_titles), len(q_descs), 0)):
+            year = q_years[i].strip() if i < len(q_years) else ""
+            title = q_titles[i].strip() if i < len(q_titles) else ""
+            desc = q_descs[i].strip() if i < len(q_descs) else ""
+            if year or title or desc:
+                quals["items"].append({"year": year, "title": title, "desc": desc})
 
         # Principles
         princ = ap["principles"]
         princ["label"] = request.form.get("princ_label", princ["label"])
         princ["title"] = request.form.get("princ_title", princ["title"])
-        for i, item in enumerate(princ["items"]):
-            prefix = f"princ_{i}_"
-            item["icon"] = request.form.get(f"{prefix}icon", item["icon"])
-            item["title"] = request.form.get(f"{prefix}title", item["title"])
-            item["text"] = request.form.get(f"{prefix}text", item["text"])
+        p_icons = request.form.getlist("princ_item_icon")
+        p_titles = request.form.getlist("princ_item_title")
+        p_texts = request.form.getlist("princ_item_text")
+        princ["items"] = []
+        for i in range(len(p_titles)):
+            if p_titles[i].strip():
+                princ["items"].append({
+                    "icon": p_icons[i].strip() if i < len(p_icons) else "",
+                    "title": p_titles[i].strip(),
+                    "text": p_texts[i].strip() if i < len(p_texts) else "",
+                })
 
         # CTA
         cta = ap["cta"]
@@ -396,33 +427,33 @@ def admin_services():
         sp["title"] = request.form.get("page_title", sp["title"])
         sp["subtitle"] = request.form.get("page_subtitle", sp["subtitle"])
 
-        for i, svc in enumerate(sp["services"]):
+        services_list = []
+        i = 0
+        while request.form.get(f"svc_{i}_title") is not None:
             prefix = f"svc_{i}_"
-            svc["id"] = request.form.get(f"{prefix}id", svc.get("id", ""))
-            svc["title"] = request.form.get(f"{prefix}title", svc["title"])
-            svc["desc"] = request.form.get(f"{prefix}desc", svc["desc"])
-            svc["icon"] = request.form.get(f"{prefix}icon", svc.get("icon", ""))
-            svc["duration"] = request.form.get(f"{prefix}duration", svc.get("duration", ""))
-            svc["format"] = request.form.get(f"{prefix}format", svc.get("format", ""))
-            svc["for_whom"] = request.form.get(f"{prefix}for_whom", svc.get("for_whom", ""))
-
-            highlights = request.form.getlist(f"{prefix}highlight")
-            svc["highlights"] = [h.strip() for h in highlights if h.strip()]
-
+            svc = {
+                "id": request.form.get(f"{prefix}id", "").strip(),
+                "title": request.form.get(f"{prefix}title", "").strip(),
+                "desc": request.form.get(f"{prefix}desc", "").strip(),
+                "icon": request.form.get(f"{prefix}icon", "").strip(),
+                "duration": request.form.get(f"{prefix}duration", "").strip(),
+                "format": request.form.get(f"{prefix}format", "").strip(),
+                "for_whom": request.form.get(f"{prefix}for_whom", "").strip(),
+                "highlights": [h.strip() for h in request.form.getlist(f"{prefix}highlight") if h.strip()],
+                "paragraphs": [p.strip() for p in request.form.getlist(f"{prefix}paragraph") if p.strip()],
+                "list_title": request.form.get(f"{prefix}list_title", "").strip(),
+                "list_items": [li.strip() for li in request.form.getlist(f"{prefix}list_item") if li.strip()],
+            }
             price_labels = request.form.getlist(f"{prefix}price_label")
             price_values = request.form.getlist(f"{prefix}price_value")
             svc["prices"] = [
                 {"label": l.strip(), "value": v.strip()}
                 for l, v in zip(price_labels, price_values)
-                if l.strip() and v.strip()
+                if l.strip() or v.strip()
             ]
-
-            paragraphs = request.form.getlist(f"{prefix}paragraph")
-            svc["paragraphs"] = [p.strip() for p in paragraphs if p.strip()]
-
-            svc["list_title"] = request.form.get(f"{prefix}list_title", svc.get("list_title", ""))
-            list_items = request.form.getlist(f"{prefix}list_item")
-            svc["list_items"] = [li.strip() for li in list_items if li.strip()]
+            services_list.append(svc)
+            i += 1
+        sp["services"] = services_list
 
         # CTA
         cta = sp["cta"]
@@ -451,9 +482,15 @@ def admin_contact():
         proc = cp["process"]
         proc["label"] = request.form.get("process_label", proc["label"])
         proc["title"] = request.form.get("process_title", proc["title"])
-        for i, step in enumerate(proc["steps"]):
-            step["title"] = request.form.get(f"step_{i}_title", step["title"])
-            step["text"] = request.form.get(f"step_{i}_text", step["text"])
+        step_titles = request.form.getlist("step_title")
+        step_texts = request.form.getlist("step_text")
+        proc["steps"] = []
+        for i in range(len(step_titles)):
+            if step_titles[i].strip():
+                proc["steps"].append({
+                    "title": step_titles[i].strip(),
+                    "text": step_texts[i].strip() if i < len(step_texts) else "",
+                })
 
         cta = cp["cta"]
         cta["title"] = request.form.get("cta_title", cta["title"])
@@ -505,6 +542,17 @@ def slugify(text):
     return slug
 
 
+def ensure_unique_slug(slug, items, exclude_item=None):
+    """Ensure slug is unique among items. If conflict, append -2, -3, etc."""
+    existing = {a["slug"] for a in items if a is not exclude_item}
+    if slug not in existing:
+        return slug
+    counter = 2
+    while f"{slug}-{counter}" in existing:
+        counter += 1
+    return f"{slug}-{counter}"
+
+
 @app.route("/admin/articles/new", methods=["GET", "POST"])
 @login_required
 def admin_article_new():
@@ -512,6 +560,7 @@ def admin_article_new():
         artcls = get_articles()
         title = request.form.get("title", "").strip()
         slug = request.form.get("slug", "").strip() or slugify(title)
+        slug = ensure_unique_slug(slug, artcls)
         image_path = ""
         file = request.files.get("image_file")
         if file and file.filename:
@@ -541,7 +590,8 @@ def admin_article_edit(slug):
 
     if request.method == "POST":
         art["title"] = request.form.get("title", art["title"]).strip()
-        art["slug"] = request.form.get("slug", art["slug"]).strip()
+        new_slug = request.form.get("slug", art["slug"]).strip()
+        art["slug"] = ensure_unique_slug(new_slug, artcls, exclude_item=art)
         # Handle image upload
         file = request.files.get("image_file")
         if file and file.filename:
@@ -575,13 +625,14 @@ def admin_article_edit(slug):
 @login_required
 def admin_article_delete(slug):
     artcls = get_articles()
-    # Delete article image if uploaded
-    art = next((a for a in artcls if a["slug"] == slug), None)
-    if art and art.get("image", "").startswith("uploads/"):
-        old_path = os.path.join(app.static_folder, art["image"])
-        if os.path.exists(old_path):
-            os.remove(old_path)
-    artcls = [a for a in artcls if a["slug"] != slug]
+    idx = next((i for i, a in enumerate(artcls) if a["slug"] == slug), None)
+    if idx is not None:
+        art = artcls[idx]
+        if art.get("image", "").startswith("uploads/"):
+            old_path = os.path.join(app.static_folder, art["image"])
+            if os.path.exists(old_path):
+                os.remove(old_path)
+        artcls.pop(idx)
     save_json(ARTICLES_FILE, artcls)
     flash("Статья удалена", "success")
     return redirect(url_for("admin_articles"))
@@ -617,6 +668,7 @@ def admin_announcement_new():
         anns = get_announcements()
         title = request.form.get("title", "").strip()
         slug = request.form.get("slug", "").strip() or slugify(title)
+        slug = ensure_unique_slug(slug, anns)
         image_path = ""
         file = request.files.get("image_file")
         if file and file.filename:
@@ -648,7 +700,8 @@ def admin_announcement_edit(slug):
 
     if request.method == "POST":
         ann["title"] = request.form.get("title", ann["title"]).strip()
-        ann["slug"] = request.form.get("slug", ann["slug"]).strip()
+        new_slug = request.form.get("slug", ann["slug"]).strip()
+        ann["slug"] = ensure_unique_slug(new_slug, anns, exclude_item=ann)
         ann["date"] = request.form.get("date", ann.get("date", "")).strip()
         ann["time"] = request.form.get("time", ann.get("time", "")).strip()
         ann["location"] = request.form.get("location", ann.get("location", "")).strip()
@@ -682,12 +735,14 @@ def admin_announcement_edit(slug):
 @login_required
 def admin_announcement_delete(slug):
     anns = get_announcements()
-    ann = next((a for a in anns if a["slug"] == slug), None)
-    if ann and ann.get("image", "").startswith("uploads/"):
-        old_path = os.path.join(app.static_folder, ann["image"])
-        if os.path.exists(old_path):
-            os.remove(old_path)
-    anns = [a for a in anns if a["slug"] != slug]
+    idx = next((i for i, a in enumerate(anns) if a["slug"] == slug), None)
+    if idx is not None:
+        ann = anns[idx]
+        if ann.get("image", "").startswith("uploads/"):
+            old_path = os.path.join(app.static_folder, ann["image"])
+            if os.path.exists(old_path):
+                os.remove(old_path)
+        anns.pop(idx)
     save_json(ANNOUNCEMENTS_FILE, anns)
     flash("Анонс удалён", "success")
     return redirect(url_for("admin_announcements"))

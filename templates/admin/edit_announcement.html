@@ -66,9 +66,11 @@
 
         <div class="admin-form__section">
             <div class="admin-field">
-                <label for="description">Описание (HTML)</label>
-                <textarea id="description" name="description" rows="12" class="admin-field--monospace">{{ announcement.description if announcement else '' }}</textarea>
-                <small>Используйте HTML-теги: &lt;p&gt;, &lt;h3&gt;, &lt;strong&gt;, &lt;em&gt;, &lt;ul&gt;, &lt;li&gt;</small>
+                <label>Описание</label>
+                <div class="admin-editor-wrap">
+                    <div id="editor">{{ announcement.description|safe if announcement else '' }}</div>
+                </div>
+                <textarea id="description" name="description" style="display:none">{{ announcement.description if announcement else '' }}</textarea>
             </div>
             <div class="admin-field admin-field--checkbox">
                 <label>
@@ -84,6 +86,23 @@
 </div>
 
 <script>
+var quill = new Quill('#editor', {
+    theme: 'snow',
+    modules: {
+        toolbar: [
+            [{ header: [3, 4, false] }],
+            ['bold', 'italic', 'underline'],
+            [{ list: 'ordered' }, { list: 'bullet' }],
+            ['blockquote', 'link'],
+            ['clean']
+        ]
+    }
+});
+
+document.querySelector('.admin-form').addEventListener('submit', function() {
+    document.getElementById('description').value = quill.root.innerHTML;
+});
+
 function previewImage(input) {
     if (input.files && input.files[0]) {
         const reader = new FileReader();

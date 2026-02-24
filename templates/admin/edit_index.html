@@ -167,35 +167,41 @@
                 <input type="text" id="services_preview_cta_text" name="services_preview_cta_text" value="{{ content.services_preview.cta_text }}">
             </div>
 
-            {% for item in content.services_preview['items'] %}
-            <div class="admin-form__section admin-form__section--nested">
-                <h4>{{ item.title }}</h4>
-                <div class="admin-field">
-                    <label>Иконка</label>
-                    <div class="icon-picker-field">
-                        <div class="icon-picker-preview" id="iconPreview_sp_{{ loop.index0 }}"><i class="{{ item.icon }}"></i></div>
-                        <input type="text" name="sp_{{ loop.index0 }}_icon" id="iconInput_sp_{{ loop.index0 }}" value="{{ item.icon }}" placeholder="fa-solid fa-handshake">
-                        <button type="button" class="icon-picker-btn" onclick="openIconPicker('sp_{{ loop.index0 }}')">Выбрать</button>
+            <div id="servicesPreviewItems">
+                {% for item in content.services_preview['items'] %}
+                <div class="admin-form__section admin-form__section--nested" data-sp-item>
+                    <div class="admin-section-header">
+                        <h4>{{ item.title or 'Карточка ' ~ loop.index }}</h4>
+                        <button type="button" class="admin-btn admin-btn--sm admin-btn--danger" onclick="this.closest('[data-sp-item]').remove()">✕</button>
+                    </div>
+                    <div class="admin-field">
+                        <label>Иконка</label>
+                        <div class="icon-picker-field">
+                            <div class="icon-picker-preview" id="iconPreview_sp_{{ loop.index0 }}"><i class="{{ item.icon }}"></i></div>
+                            <input type="hidden" name="sp_icon" id="iconInput_sp_{{ loop.index0 }}" value="{{ item.icon }}">
+                            <button type="button" class="icon-picker-btn" onclick="openIconPicker('sp_{{ loop.index0 }}')">Выбрать</button>
+                        </div>
+                    </div>
+                    <div class="admin-field">
+                        <label>Название</label>
+                        <input type="text" name="sp_title" value="{{ item.title }}">
+                    </div>
+                    <div class="admin-field">
+                        <label>Описание</label>
+                        <textarea name="sp_text" rows="2">{{ item.text }}</textarea>
+                    </div>
+                    <div class="admin-field">
+                        <label>Цена</label>
+                        <input type="text" name="sp_price" value="{{ item.price }}">
+                    </div>
+                    <div class="admin-field">
+                        <label>Ссылка на услугу <small style="color:#999">(ID услуги на странице «Услуги»)</small></label>
+                        <input type="text" name="sp_link_id" value="{{ item.link_id|default('', true) }}">
                     </div>
                 </div>
-                <div class="admin-field">
-                    <label>Название</label>
-                    <input type="text" name="sp_{{ loop.index0 }}_title" value="{{ item.title }}">
-                </div>
-                <div class="admin-field">
-                    <label>Описание</label>
-                    <textarea name="sp_{{ loop.index0 }}_text" rows="2">{{ item.text }}</textarea>
-                </div>
-                <div class="admin-field">
-                    <label>Цена</label>
-                    <input type="text" name="sp_{{ loop.index0 }}_price" value="{{ item.price }}">
-                </div>
-                <div class="admin-field">
-                    <label>Ссылка на услугу <small style="color:#999">(ID услуги на странице «Услуги»)</small></label>
-                    <input type="text" name="sp_{{ loop.index0 }}_link_id" value="{{ item.link_id|default('', true) }}">
-                </div>
+                {% endfor %}
             </div>
-            {% endfor %}
+            <button type="button" class="admin-btn admin-btn--outline" onclick="addServicePreviewCard()">+ Добавить карточку</button>
         </div>
 
         <!-- ═══ Process Steps ═══ -->
@@ -209,19 +215,25 @@
                 <label for="process_title">Заголовок</label>
                 <input type="text" id="process_title" name="process_title" value="{{ content.process_steps.title }}">
             </div>
-            {% for step in content.process_steps.steps %}
-            <div class="admin-form__section admin-form__section--nested">
-                <h4>Шаг {{ loop.index }}</h4>
-                <div class="admin-field">
-                    <label>Заголовок шага</label>
-                    <input type="text" name="process_step_{{ loop.index0 }}_title" value="{{ step.title }}">
+            <div id="processSteps">
+                {% for step in content.process_steps.steps %}
+                <div class="admin-form__section admin-form__section--nested" data-process-step>
+                    <div class="admin-section-header">
+                        <h4>Шаг {{ loop.index }}</h4>
+                        <button type="button" class="admin-btn admin-btn--sm admin-btn--danger" onclick="this.closest('[data-process-step]').remove()">✕</button>
+                    </div>
+                    <div class="admin-field">
+                        <label>Заголовок шага</label>
+                        <input type="text" name="process_step_title" value="{{ step.title }}">
+                    </div>
+                    <div class="admin-field">
+                        <label>Описание шага</label>
+                        <textarea name="process_step_text" rows="2">{{ step.text }}</textarea>
+                    </div>
                 </div>
-                <div class="admin-field">
-                    <label>Описание шага</label>
-                    <textarea name="process_step_{{ loop.index0 }}_text" rows="2">{{ step.text }}</textarea>
-                </div>
+                {% endfor %}
             </div>
-            {% endfor %}
+            <button type="button" class="admin-btn admin-btn--outline" onclick="addProcessStep()">+ Добавить шаг</button>
         </div>
 
         <!-- ═══ CTA ═══ -->
@@ -246,27 +258,55 @@
 </div>
 
 <script>
+var spCounter = {{ content.services_preview["items"]|length }};
+
 function addHelpItem() {
-    const container = document.getElementById('helpItems');
-    const div = document.createElement('div');
+    var container = document.getElementById('helpItems');
+    var div = document.createElement('div');
     div.className = 'admin-field admin-field--removable';
     div.innerHTML = '<textarea name="help_items" rows="2" placeholder="Новый пункт..."></textarea><button type="button" class="admin-btn admin-btn--sm admin-btn--danger" onclick="this.parentElement.remove()">✕</button>';
     container.appendChild(div);
 }
 
 function addAboutPreviewPara() {
-    const container = document.getElementById('aboutPreviewParas');
-    const div = document.createElement('div');
+    var container = document.getElementById('aboutPreviewParas');
+    var div = document.createElement('div');
     div.className = 'admin-field admin-field--removable';
     div.innerHTML = '<textarea name="about_preview_paragraph" rows="3" placeholder="Новый параграф..."></textarea><button type="button" class="admin-btn admin-btn--sm admin-btn--danger" onclick="this.parentElement.remove()">✕</button>';
     container.appendChild(div);
 }
 
+function addServicePreviewCard() {
+    var idx = spCounter++;
+    var container = document.getElementById('servicesPreviewItems');
+    var div = document.createElement('div');
+    div.className = 'admin-form__section admin-form__section--nested';
+    div.setAttribute('data-sp-item', '');
+    div.innerHTML = '<div class="admin-section-header"><h4>Новая карточка</h4><button type="button" class="admin-btn admin-btn--sm admin-btn--danger" onclick="this.closest(\'[data-sp-item]\').remove()">✕</button></div>'
+        + '<div class="admin-field"><label>Иконка</label><div class="icon-picker-field"><div class="icon-picker-preview" id="iconPreview_sp_' + idx + '"><i class="fa-solid fa-icons" style="opacity:0.3"></i></div><input type="hidden" name="sp_icon" id="iconInput_sp_' + idx + '" value=""><button type="button" class="icon-picker-btn" onclick="openIconPicker(\'sp_' + idx + '\')">Выбрать</button></div></div>'
+        + '<div class="admin-field"><label>Название</label><input type="text" name="sp_title" placeholder="Название"></div>'
+        + '<div class="admin-field"><label>Описание</label><textarea name="sp_text" rows="2" placeholder="Описание..."></textarea></div>'
+        + '<div class="admin-field"><label>Цена</label><input type="text" name="sp_price" placeholder="Цена"></div>'
+        + '<div class="admin-field"><label>Ссылка на услугу</label><input type="text" name="sp_link_id" placeholder="ID услуги"></div>';
+    container.appendChild(div);
+}
+
+function addProcessStep() {
+    var container = document.getElementById('processSteps');
+    var div = document.createElement('div');
+    div.className = 'admin-form__section admin-form__section--nested';
+    div.setAttribute('data-process-step', '');
+    div.innerHTML = '<div class="admin-section-header"><h4>Новый шаг</h4><button type="button" class="admin-btn admin-btn--sm admin-btn--danger" onclick="this.closest(\'[data-process-step]\').remove()">✕</button></div>'
+        + '<div class="admin-field"><label>Заголовок шага</label><input type="text" name="process_step_title" placeholder="Заголовок"></div>'
+        + '<div class="admin-field"><label>Описание шага</label><textarea name="process_step_text" rows="2" placeholder="Описание..."></textarea></div>';
+    container.appendChild(div);
+}
+
 function previewField(input, imgId, removeId) {
     if (input.files && input.files[0]) {
-        const reader = new FileReader();
+        var reader = new FileReader();
         reader.onload = function(e) {
-            const img = document.getElementById(imgId);
+            var img = document.getElementById(imgId);
             img.src = e.target.result;
             img.parentElement.style.display = '';
         };

@@ -1113,3 +1113,48 @@ body {
 .icon-picker-item--hidden {
     display: none;
 }
+
+/* ===== Section Header (with delete button) ===== */
+.admin-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.admin-section-header h4 {
+    margin: 0;
+}
+
+/* ===== WYSIWYG Editor ===== */
+.admin-editor-wrap {
+    border: 1px solid var(--admin-border);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.admin-editor-wrap .ql-toolbar {
+    border: none;
+    border-bottom: 1px solid var(--admin-border);
+    background: var(--admin-bg);
+}
+
+.admin-editor-wrap .ql-container {
+    border: none;
+    font-family: var(--admin-font);
+    font-size: 0.875rem;
+}
+
+.admin-editor-wrap .ql-editor {
+    min-height: 250px;
+    line-height: 1.7;
+}
+
+.admin-editor-wrap .ql-editor p,
+.admin-editor-wrap .ql-editor h3,
+.admin-editor-wrap .ql-editor h4,
+.admin-editor-wrap .ql-editor ul,
+.admin-editor-wrap .ql-editor ol,
+.admin-editor-wrap .ql-editor blockquote {
+    margin-bottom: 0.5em;
+}
