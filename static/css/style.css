@@ -1941,9 +1941,11 @@ p {
 }
 
 /* Article Content (rendered HTML) */
+.article-container {
+    max-width: clamp(720px, 70vw, 960px);
+}
+
 .article-page__content {
-    max-width: 720px;
-    margin: 0 auto;
     font-size: 1.0625rem;
     line-height: 1.85;
     color: var(--color-text);
@@ -2072,7 +2074,7 @@ p {
    =============================================== */
 .documents-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
     gap: 1.5rem;
 }
 
@@ -2083,6 +2085,7 @@ p {
     border-radius: 12px;
     overflow: hidden;
     text-decoration: none;
+    cursor: pointer;
     transition: transform var(--transition), box-shadow var(--transition);
 }
 
@@ -2092,7 +2095,7 @@ p {
 }
 
 .document-card__image {
-    aspect-ratio: 3 / 4;
+    aspect-ratio: 297 / 210;
     overflow: hidden;
     background: var(--color-bg-alt);
 }
@@ -2117,10 +2120,62 @@ p {
     text-align: center;
 }
 
+/* Document Preview Modal */
+.doc-modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: rgba(0, 0, 0, 0.85);
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.doc-modal-overlay--open {
+    display: flex;
+}
+
+.doc-modal__close {
+    position: fixed;
+    top: 1rem;
+    right: 1.5rem;
+    z-index: 10000;
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 2.5rem;
+    cursor: pointer;
+    line-height: 1;
+    opacity: 0.8;
+    transition: opacity var(--transition);
+}
+
+.doc-modal__close:hover {
+    opacity: 1;
+}
+
+.doc-modal__img {
+    max-width: 90vw;
+    max-height: 90vh;
+    object-fit: contain;
+    border-radius: 8px;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.4);
+}
+
 @media (max-width: 768px) {
     .documents-grid {
-        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        grid-template-columns: 1fr;
         gap: 1rem;
+    }
+
+    .doc-modal-overlay {
+        padding: 1rem;
+    }
+
+    .doc-modal__img {
+        max-width: 95vw;
+        max-height: 85vh;
     }
 }
 

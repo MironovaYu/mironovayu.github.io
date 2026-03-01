@@ -6,7 +6,7 @@
 {% block content %}
 <!-- Article Header -->
 <section class="section article-header">
-    <div class="container" style="max-width: 720px;">
+    <div class="container article-container">
         <div class="fade-in">
             <a href="{{ url_for('articles') }}" class="article-page__back">
                 <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
@@ -20,7 +20,7 @@
 <!-- Article Image -->
 {% if article.image %}
 <section class="article-image">
-    <div class="container fade-in" style="max-width: 720px;">
+    <div class="container article-container fade-in">
         <img src="{{ url_for('static', filename=article.image) }}" alt="{{ article.title }}" loading="lazy" style="border-radius: var(--radius-md); width: 100%;">
     </div>
 </section>
@@ -28,7 +28,7 @@
 
 <!-- Article Content -->
 <section class="section" style="padding-top: 2rem;">
-    <div class="container fade-in" style="max-width: 720px;">
+    <div class="container article-container fade-in">
         <div class="article-page__content">
             {{ article.content|safe }}
         </div>
@@ -37,7 +37,7 @@
 
 <!-- Article Nav -->
 <section class="section" style="padding-top: 0;">
-    <div class="container fade-in" style="max-width: 720px;">
+    <div class="container article-container fade-in">
         <a href="{{ url_for('articles') }}" class="article-page__back">
             <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
             Вернуться к статьям

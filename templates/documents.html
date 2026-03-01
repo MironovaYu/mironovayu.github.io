@@ -24,14 +24,14 @@
         {% if data.documents_page.docs %}
         <div class="documents-grid fade-in">
             {% for doc in data.documents_page.docs %}
-            <a href="{{ url_for('static', filename=doc.image) }}" class="document-card" target="_blank" rel="noopener">
+            <div class="document-card" data-full="{{ url_for('static', filename=doc.image) }}">
                 <div class="document-card__image">
                     <img src="{{ url_for('static', filename=doc.image) }}" alt="{{ doc.title }}" loading="lazy">
                 </div>
                 {% if doc.title %}
                 <div class="document-card__title">{{ doc.title }}</div>
                 {% endif %}
-            </a>
+            </div>
             {% endfor %}
         </div>
         {% else %}
@@ -41,4 +41,10 @@
         {% endif %}
     </div>
 </section>
+
+<!-- Document Preview Modal -->
+<div class="doc-modal-overlay" id="docModal">
+    <button class="doc-modal__close" id="docModalClose" aria-label="Закрыть">&times;</button>
+    <img class="doc-modal__img" id="docModalImg" src="" alt="Предпросмотр документа">
+</div>
 {% endblock %}

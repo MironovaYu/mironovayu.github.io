@@ -86,8 +86,10 @@
         <div class="cards-grid">
             {% for item in data.about_page.principles['items'] %}
             <div class="card fade-in">
-                <div class="card__icon">{% if item.icon and 'fa-' in item.icon %}<i class="{{ item.icon }}"></i>{% else %}{{ item.icon }}{% endif %}</div>
-                <h3 class="card__title">{{ item.title }}</h3>
+                <div class="card__header">
+                    <div class="card__icon">{% if item.icon and 'fa-' in item.icon %}<i class="{{ item.icon }}"></i>{% else %}{{ item.icon }}{% endif %}</div>
+                    <h3 class="card__title">{{ item.title }}</h3>
+                </div>
                 <p class="card__text">{{ item.text }}</p>
             </div>
             {% endfor %}

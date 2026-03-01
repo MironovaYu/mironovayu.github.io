@@ -418,4 +418,55 @@
         renderUpcoming();
     }
 
+    // ===== Document Preview Modal =====
+    const docModal = document.getElementById('docModal');
+    const docModalImg = document.getElementById('docModalImg');
+    const docModalClose = document.getElementById('docModalClose');
+
+    if (docModal) {
+        let scrollY = 0;
+
+        const lockScroll = () => {
+            scrollY = window.scrollY;
+            document.body.style.position = 'fixed';
+            document.body.style.top = '-' + scrollY + 'px';
+            document.body.style.left = '0';
+            document.body.style.right = '0';
+            document.body.style.overflow = 'hidden';
+        };
+
+        const unlockScroll = () => {
+            document.body.style.position = '';
+            document.body.style.top = '';
+            document.body.style.left = '';
+            document.body.style.right = '';
+            document.body.style.overflow = '';
+            window.scrollTo(0, scrollY);
+        };
+
+        document.querySelectorAll('.document-card[data-full]').forEach(card => {
+            card.addEventListener('click', () => {
+                docModalImg.src = card.dataset.full;
+                docModal.classList.add('doc-modal-overlay--open');
+                lockScroll();
+            });
+        });
+
+        const closeDocModal = () => {
+            docModal.classList.remove('doc-modal-overlay--open');
+            unlockScroll();
+            docModalImg.src = '';
+        };
+
+        docModalClose.addEventListener('click', closeDocModal);
+        docModal.addEventListener('click', (e) => {
+            if (e.target === docModal) closeDocModal();
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && docModal.classList.contains('doc-modal-overlay--open')) {
+                closeDocModal();
+            }
+        });
+    }
+
 })();
