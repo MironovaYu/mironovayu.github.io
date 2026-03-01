@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block title %}Контакты — {{ site.name }}, {{ site.role|title }}{% endblock %}
-{% block description %}Свяжитесь с {{ site.name }}: Telegram, МАКС. Запись на консультацию, бесплатная предварительная беседа.{% endblock %}
+{% block description %}Свяжитесь с {{ site.name }}: Telegram, MAX, ВКонтакте. Запись на консультацию, бесплатная предварительная беседа.{% endblock %}
 
 {% block content %}
 <!-- Contact Hero -->
@@ -32,22 +32,46 @@
             {% if site.maks_link %}
             <div class="contact-card">
                 <div class="contact-card__icon">
-                    <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                    <svg viewBox="0 0 800 720" width="32" height="32" fill="currentColor"><path d="M350.4,9.6C141.8,20.5,4.1,184.1,12.8,390.4c3.8,90.3,40.1,168,48.7,253.7,2.2,22.2-4.2,49.6,21.4,59.3,31.5,11.9,79.8-8.1,106.2-26.4,9-6.1,17.6-13.2,24.2-22,27.3,18.1,53.2,35.6,85.7,43.4,143.1,34.3,299.9-44.2,369.6-170.3C799.6,291.2,622.5-4.6,350.4,9.6h0ZM269.4,504c-11.3,8.8-22.2,20.8-34.7,27.7-18.1,9.7-23.7-.4-30.5-16.4-21.4-50.9-24-137.6-11.5-190.9,16.8-72.5,72.9-136.3,150-143.1,78-6.9,150.4,32.7,183.1,104.2,72.4,159.1-112.9,316.2-256.4,218.6h0Z"/></svg>
                 </div>
-                <h3>МАКС</h3>
-                <p>Запись на консультацию через платформу МАКС.</p>
-                <a href="{{ site.maks_link }}" class="btn btn--outline" target="_blank" rel="noopener">Записаться через МАКС</a>
+                <h3>MAX</h3>
+                <p>Напишите мне в мессенджере MAX.</p>
+                <a href="{{ site.maks_link }}" class="btn btn--outline" target="_blank" rel="noopener">Написать в МАКС</a>
             </div>
             {% endif %}
 
+            {% if site.vk_link %}
             <div class="contact-card">
                 <div class="contact-card__icon">
-                    <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                    <svg viewBox="0 0 24 24" width="32" height="32" fill="currentColor"><path d="M21.579 6.855c.14-.465 0-.806-.662-.806h-2.193c-.558 0-.813.295-.953.619 0 0-1.115 2.719-2.695 4.482-.51.513-.743.675-1.021.675-.14 0-.344-.162-.344-.627V6.855c0-.558-.161-.806-.626-.806H9.642c-.348 0-.558.259-.558.504 0 .528.79.65.871 2.138v3.228c0 .707-.128.836-.406.836-.743 0-2.551-2.729-3.624-5.853-.21-.607-.42-.852-.98-.852H2.752c-.627 0-.752.295-.752.619 0 .582.743 3.462 3.461 7.271 1.812 2.601 4.363 4.011 6.687 4.011 1.393 0 1.565-.313 1.565-.852v-1.966c0-.627.132-.752.574-.752.325 0 .883.163 2.183 1.417 1.486 1.486 1.732 2.153 2.568 2.153h2.193c.627 0 .94-.313.759-.932-.198-.616-.907-1.51-1.849-2.569-.51-.604-1.277-1.254-1.51-1.579-.325-.418-.232-.604 0-.976 0 0 2.672-3.764 2.95-5.04z"/></svg>
                 </div>
-                <h3>Формат встреч</h3>
-                <p>Очные сессии (предпочтительно) и онлайн-консультации по видеосвязи.</p>
-                <a href="{{ url_for('services') }}" class="btn btn--outline">Подробнее об услугах</a>
+                <h3>ВКонтакте</h3>
+                <p>Следите за публикациями и новостями.</p>
+                <a href="{{ site.vk_link }}" class="btn btn--outline" target="_blank" rel="noopener">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M21.579 6.855c.14-.465 0-.806-.662-.806h-2.193c-.558 0-.813.295-.953.619 0 0-1.115 2.719-2.695 4.482-.51.513-.743.675-1.021.675-.14 0-.344-.162-.344-.627V6.855c0-.558-.161-.806-.626-.806H9.642c-.348 0-.558.259-.558.504 0 .528.79.65.871 2.138v3.228c0 .707-.128.836-.406.836-.743 0-2.551-2.729-3.624-5.853-.21-.607-.42-.852-.98-.852H2.752c-.627 0-.752.295-.752.619 0 .582.743 3.462 3.461 7.271 1.812 2.601 4.363 4.011 6.687 4.011 1.393 0 1.565-.313 1.565-.852v-1.966c0-.627.132-.752.574-.752.325 0 .883.163 2.183 1.417 1.486 1.486 1.732 2.153 2.568 2.153h2.193c.627 0 .94-.313.759-.932-.198-.616-.907-1.51-1.849-2.569-.51-.604-1.277-1.254-1.51-1.579-.325-.418-.232-.604 0-.976 0 0 2.672-3.764 2.95-5.04z"/></svg>
+                    Открыть ВКонтакте
+                </a>
             </div>
+            {% endif %}
+
+            {% if site.address %}
+            <div class="contact-card contact-card--map">
+                <div class="contact-card__info">
+                    <div class="contact-card__icon">
+                        <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                    </div>
+                    <h3>Адрес консультаций</h3>
+                    <p>{{ site.address }}</p>
+                    <a href="https://yandex.com/maps/6/kaluga/?ll=36.240073%2C54.512017&mode=poi&poi%5Bpoint%5D=36.240419%2C54.512168&poi%5Buri%5D=ymapsbm1%3A%2F%2Forg%3Foid%3D85237573123&z=17.56" class="btn btn--outline" target="_blank" rel="noopener">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                        Открыть на карте
+                    </a>
+                </div>
+                <div class="contact-map">
+                    <iframe src="https://yandex.ru/map-widget/v1/?ll=36.240073%2C54.512017&z=17&pt=36.240419%2C54.512168%2Cpm2rdm" width="100%" height="100%" frameborder="0" allowfullscreen loading="lazy"></iframe>
+                </div>
+            </div>
+            {% endif %}
         </div>
     </div>
 </section>

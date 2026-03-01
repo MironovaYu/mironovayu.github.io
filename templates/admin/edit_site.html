@@ -37,9 +37,19 @@
                 <small>Основной способ связи. Используется во всех CTA-кнопках сайта.</small>
             </div>
             <div class="admin-field">
-                <label for="maks_link">МАКС (ссылка для записи)</label>
-                <input type="url" id="maks_link" name="maks_link" value="{{ content.site.maks_link }}" placeholder="https://...">
+                <label for="maks_link">МАКС (ссылка)</label>
+                <input type="url" id="maks_link" name="maks_link" value="{{ content.site.maks_link }}" placeholder="https://max.ru/...">
                 <small>Если пусто — кнопка МАКС не будет показана на сайте.</small>
+            </div>
+            <div class="admin-field">
+                <label for="vk_link">ВКонтакте (ссылка)</label>
+                <input type="url" id="vk_link" name="vk_link" value="{{ content.site.get('vk_link', '') }}" placeholder="https://vk.ru/...">
+                <small>Если пусто — кнопка ВК не будет показана на сайте.</small>
+            </div>
+            <div class="admin-field">
+                <label for="address">Адрес консультаций</label>
+                <input type="text" id="address" name="address" value="{{ content.site.get('address', '') }}" placeholder="г. Калуга, ул. ...">
+                <small>Адрес отображается на странице контактов с картой Яндекс.</small>
             </div>
         </div>
         <button type="submit" class="admin-btn admin-btn--primary">Сохранить</button>

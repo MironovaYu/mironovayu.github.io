@@ -197,6 +197,8 @@ def admin_site():
         s["tagline"] = request.form.get("tagline", s["tagline"])
         s["telegram_link"] = request.form.get("telegram_link", s.get("telegram_link", ""))
         s["maks_link"] = request.form.get("maks_link", s.get("maks_link", ""))
+        s["vk_link"] = request.form.get("vk_link", s.get("vk_link", ""))
+        s["address"] = request.form.get("address", s.get("address", ""))
         s["copyright_year"] = request.form.get("copyright_year", s.get("copyright_year", ""))
         save_json(CONTENT_FILE, content)
         flash("Настройки сайта сохранены", "success")
