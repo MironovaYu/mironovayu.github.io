@@ -18,6 +18,16 @@ freezer = Freezer(app, with_no_argument_rules=False)
 
 
 @freezer.register_generator
+def robots_txt():
+    yield {}
+
+
+@freezer.register_generator
+def sitemap_xml():
+    yield {}
+
+
+@freezer.register_generator
 def index():
     yield {}
 

@@ -3,10 +3,33 @@
 {% block title %}Обо мне — {{ site.name }}, {{ site.role|title }}{% endblock %}
 {% block description %}{{ site.name }} — образование, подход к работе, квалификация. {{ site.tagline }}.{% endblock %}
 
+{% block og_title %}Обо мне — {{ site.name }}, {{ site.role|title }}{% endblock %}
+{% block og_description %}{{ site.name }} — образование, подход к работе, квалификация.{% endblock %}
+{% block og_image %}{% if data.about_page.image %}<meta property="og:image" content="{{ site.site_url }}/static/{{ data.about_page.image }}">{% endif %}{% endblock %}
+
+{% block head %}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Главная", "item": "{{ site.site_url }}/"},
+        {"@type": "ListItem", "position": 2, "name": "Обо мне"}
+    ]
+}
+</script>
+{% endblock %}
+
 {% block content %}
 <!-- About Hero -->
 <section class="about-hero section">
     <div class="container">
+        <nav class="breadcrumb" aria-label="Навигация">
+            <ol class="breadcrumb__list">
+                <li><a href="{{ url_for('index') }}">Главная</a></li>
+                <li aria-current="page">Обо мне</li>
+            </ol>
+        </nav>
         <div class="about-hero__inner">
             <div class="about-hero__photo">
                 {% if data.about_page.image %}

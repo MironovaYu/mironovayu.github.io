@@ -1433,6 +1433,43 @@ p {
     font-size: 1rem;
 }
 
+/* ===== Breadcrumbs ===== */
+.breadcrumb {
+    padding: 0;
+    margin: -2rem 0 1.5rem;
+}
+
+.breadcrumb__list {
+    display: flex;
+    flex-wrap: wrap;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+}
+
+.breadcrumb__list li {
+    display: flex;
+    align-items: center;
+}
+
+.breadcrumb__list li + li::before {
+    content: "›";
+    margin: 0 0.5em;
+    color: var(--color-text-light);
+}
+
+.breadcrumb__list a {
+    color: var(--color-text-muted);
+    text-decoration: none;
+    transition: color var(--transition);
+}
+
+.breadcrumb__list a:hover {
+    color: var(--color-accent);
+}
+
 /* ===== Footer ===== */
 .footer {
     background: var(--color-bg-alt);

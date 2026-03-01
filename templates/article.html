@@ -3,15 +3,55 @@
 {% block title %}{{ article.title }} — {{ site.name }}, {{ site.role|title }}{% endblock %}
 {% block description %}{{ article.excerpt }}{% endblock %}
 
+{% block og_type %}article{% endblock %}
+{% block og_title %}{{ article.title }}{% endblock %}
+{% block og_description %}{{ article.excerpt }}{% endblock %}
+{% block og_image %}{% if article.image %}<meta property="og:image" content="{{ site.site_url }}/static/{{ article.image }}">{% endif %}{% endblock %}
+
+{% block head %}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "{{ article.title }}",
+    "description": "{{ article.excerpt }}",
+    "author": {
+        "@type": "Person",
+        "name": "{{ site.name }}"
+    },
+    {% if article.image %}"image": "{{ site.site_url }}/static/{{ article.image }}",{% endif %}
+    "publisher": {
+        "@type": "Person",
+        "name": "{{ site.name }}"
+    },
+    "mainEntityOfPage": "{{ site.site_url }}{{ request.path }}"
+}
+</script>
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Главная", "item": "{{ site.site_url }}/"},
+        {"@type": "ListItem", "position": 2, "name": "Статьи", "item": "{{ site.site_url }}/articles/"},
+        {"@type": "ListItem", "position": 3, "name": "{{ article.title }}"}
+    ]
+}
+</script>
+{% endblock %}
+
 {% block content %}
 <!-- Article Header -->
 <section class="section article-header">
     <div class="container article-container">
         <div class="fade-in">
-            <a href="{{ url_for('articles') }}" class="article-page__back">
-                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-                Все статьи
-            </a>
+            <nav class="breadcrumb" aria-label="Навигация">
+                <ol class="breadcrumb__list">
+                    <li><a href="{{ url_for('index') }}">Главная</a></li>
+                    <li><a href="{{ url_for('articles') }}">Статьи</a></li>
+                    <li aria-current="page">{{ article.title }}</li>
+                </ol>
+            </nav>
             <h1 class="article-page__title">{{ article.title }}</h1>
         </div>
     </div>

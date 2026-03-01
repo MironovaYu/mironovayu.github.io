@@ -3,10 +3,32 @@
 {% block title %}Статьи — {{ site.name }}, {{ site.role|title }}{% endblock %}
 {% block description %}Статьи {{ site.name }} о саморегуляции, психологии, работе с телом и эмоциями.{% endblock %}
 
+{% block og_title %}Статьи — {{ site.name }}{% endblock %}
+{% block og_description %}Статьи {{ site.name }} о саморегуляции, психологии, работе с телом.{% endblock %}
+
+{% block head %}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Главная", "item": "{{ site.site_url }}/"},
+        {"@type": "ListItem", "position": 2, "name": "Статьи"}
+    ]
+}
+</script>
+{% endblock %}
+
 {% block content %}
 <!-- Articles Hero -->
 <section class="section articles-hero" style="padding-bottom: 1rem;">
     <div class="container">
+        <nav class="breadcrumb" aria-label="Навигация">
+            <ol class="breadcrumb__list">
+                <li><a href="{{ url_for('index') }}">Главная</a></li>
+                <li aria-current="page">Статьи</li>
+            </ol>
+        </nav>
         <div class="section__header fade-in" style="margin-bottom: 0;">
             <span class="section__label">Блог</span>
             <h1 class="section__title" style="font-size: clamp(2rem, 4vw, 3rem);">Статьи</h1>

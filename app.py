@@ -9,8 +9,8 @@ from functools import wraps
 
 from werkzeug.utils import secure_filename
 
-from flask import (Flask, abort, flash, jsonify, redirect, render_template,
-                   request, session, url_for)
+from flask import (Flask, Response, abort, flash, jsonify, redirect,
+                   render_template, request, session, url_for)
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", secrets.token_hex(32))
@@ -86,6 +86,51 @@ def inject_globals():
     content = get_content()
     site = content["site"]
     return {"site": site}
+
+
+# ─── SEO routes ─────────────────────────────────────────────────
+
+@app.route("/robots.txt")
+def robots_txt():
+    content = get_content()
+    site_url = content["site"].get("site_url", "")
+    body = (
+        "User-agent: *\n"
+        "Allow: /\n"
+        "Disallow: /admin/\n"
+        f"\nSitemap: {site_url}/sitemap.xml\n"
+    )
+    return Response(body, mimetype="text/plain")
+
+
+@app.route("/sitemap.xml")
+def sitemap_xml():
+    content = get_content()
+    site_url = content["site"].get("site_url", "")
+    pages = [
+        {"loc": "/", "priority": "1.0", "changefreq": "weekly"},
+        {"loc": "/about/", "priority": "0.8", "changefreq": "monthly"},
+        {"loc": "/services/", "priority": "0.8", "changefreq": "monthly"},
+        {"loc": "/articles/", "priority": "0.7", "changefreq": "weekly"},
+        {"loc": "/announcements/", "priority": "0.6", "changefreq": "weekly"},
+        {"loc": "/contact/", "priority": "0.7", "changefreq": "monthly"},
+        {"loc": "/documents/", "priority": "0.5", "changefreq": "monthly"},
+    ]
+    for art in get_articles():
+        if art.get("published"):
+            pages.append(
+                {"loc": f"/articles/{art['slug']}/", "priority": "0.6", "changefreq": "monthly"}
+            )
+    xml = '<?xml version="1.0" encoding="UTF-8"?>\n'
+    xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+    for p in pages:
+        xml += "  <url>\n"
+        xml += f"    <loc>{site_url}{p['loc']}</loc>\n"
+        xml += f"    <changefreq>{p['changefreq']}</changefreq>\n"
+        xml += f"    <priority>{p['priority']}</priority>\n"
+        xml += "  </url>\n"
+    xml += "</urlset>"
+    return Response(xml, mimetype="application/xml")
 
 
 # ─── Public routes ──────────────────────────────────────────────

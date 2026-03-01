@@ -2,6 +2,34 @@
 
 {% block title %}{{ site.name }} — {{ site.role|title }} | Телесно-ориентированная терапия{% endblock %}
 
+{% block og_title %}{{ site.name }} — {{ site.role|title }} | Телесно-ориентированная терапия{% endblock %}
+{% block og_description %}{{ data.hero.text|striptags }}{% endblock %}
+{% block og_image %}{% if data.hero.image %}<meta property="og:image" content="{{ site.site_url }}/static/{{ data.hero.image }}">{% endif %}{% endblock %}
+
+{% block head %}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "ProfessionalService",
+    "name": "{{ site.name }}",
+    "description": "{{ site.tagline }}",
+    "url": "{{ site.site_url }}",
+    {% if site.address %}"address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Калуга",
+        "streetAddress": "{{ site.address }}"
+    },{% endif %}
+    "sameAs": [
+        {% if site.telegram_link %}"{{ site.telegram_link }}"{% endif %}
+        {% if site.vk_link %},  "{{ site.vk_link }}"{% endif %}
+    ],
+    {% if data.hero.image %}"image": "{{ site.site_url }}/static/{{ data.hero.image }}",{% endif %}
+    "priceRange": "₽₽",
+    "areaServed": "Калуга"
+}
+</script>
+{% endblock %}
+
 {% block content %}
 <!-- Hero -->
 <section class="hero">

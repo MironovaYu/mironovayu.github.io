@@ -3,15 +3,34 @@
 {% block title %}{{ data.documents_page.title }} — {{ site.name }}, {{ site.role|title }}{% endblock %}
 {% block description %}{{ data.documents_page.subtitle }}{% endblock %}
 
+{% block og_title %}{{ data.documents_page.title }} — {{ site.name }}{% endblock %}
+
+{% block head %}
+<script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Главная", "item": "{{ site.site_url }}/"},
+        {"@type": "ListItem", "position": 2, "name": "Обо мне", "item": "{{ site.site_url }}/about/"},
+        {"@type": "ListItem", "position": 3, "name": "{{ data.documents_page.title }}"}
+    ]
+}
+</script>
+{% endblock %}
+
 {% block content %}
 <!-- Documents Header -->
 <section class="section">
     <div class="container">
         <div class="section__header fade-in">
-            <a href="{{ url_for('about') }}" class="article-page__back" style="margin-bottom: 1.5rem;">
-                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-                Обо мне
-            </a>
+            <nav class="breadcrumb" aria-label="Навигация">
+                <ol class="breadcrumb__list">
+                    <li><a href="{{ url_for('index') }}">Главная</a></li>
+                    <li><a href="{{ url_for('about') }}">Обо мне</a></li>
+                    <li aria-current="page">{{ data.documents_page.title }}</li>
+                </ol>
+            </nav>
             <h1 class="section__title">{{ data.documents_page.title }}</h1>
             <p class="section__subtitle">{{ data.documents_page.subtitle }}</p>
         </div>
