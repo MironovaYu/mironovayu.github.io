@@ -78,5 +78,65 @@
         "description": "<p>Смотрим и обсуждаем фильмы, чтобы через истории героев лучше понять себя, свои чувства и найти ответы на жизненные вопросы. Ведущий: СанСаныч Величкин. Фильм: \"Тот самый Мюнхгаузен\"</p>",
         "image": "",
         "published": true
+    },
+    {
+        "slug": "svobodnoe-vremya-na-konsultaciyu",
+        "title": "Свободное время на консультацию.",
+        "date": "2026-04-06",
+        "time": "17:00",
+        "location": "Калуга, ул. Академика Королева, 22, Студия \"Яснозара\"",
+        "description": "<p><br></p>",
+        "image": "",
+        "published": true
+    },
+    {
+        "slug": "svobodnoe-vremya-na-konsultaciyu-2",
+        "title": "Свободное время на консультацию.",
+        "date": "2026-04-06",
+        "time": "18:00",
+        "location": "Калуга, ул. Академика Королева, 22, Студия \"Яснозара\"",
+        "description": "<p><br></p>",
+        "image": "",
+        "published": true
+    },
+    {
+        "slug": "svobodnoe-vremya-na-konsultaciyu-3",
+        "title": "Свободное время на консультацию.",
+        "date": "2026-04-06",
+        "time": "19:00",
+        "location": "Калуга, ул. Академика Королева, 33, студия \"Яснозара\"",
+        "description": "<p><br></p>",
+        "image": "",
+        "published": true
+    },
+    {
+        "slug": "svobodnoe-vremya-na-konsultaciyu-4",
+        "title": "Свободное время на консультацию.",
+        "date": "2026-04-07",
+        "time": "16:30",
+        "location": "Калга, ул. Труда, 33, стр. 3, Клуб \"Равновесие\"",
+        "description": "<p><br></p>",
+        "image": "",
+        "published": true
+    },
+    {
+        "slug": "svobodnoe-vremya-na-konsultaciyu-5",
+        "title": "Свободное время на консультацию.",
+        "date": "2026-04-09",
+        "time": "15:30",
+        "location": "Калуга, ул. Академика Королева, 33, студия \"Яснозара\"",
+        "description": "<p><br></p>",
+        "image": "",
+        "published": true
+    },
+    {
+        "slug": "svobodnoe-vremya-na-konsultaciyu-6",
+        "title": "Свободное время на консультацию.",
+        "date": "2026-04-11",
+        "time": "15:30",
+        "location": "Калуга, ул. Академика Королева, 33, студия \"Яснозара\"",
+        "description": "<p><br></p>",
+        "image": "",
+        "published": true
     }
 ]
